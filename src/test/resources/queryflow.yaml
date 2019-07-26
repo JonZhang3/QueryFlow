@@ -1,0 +1,3 @@
+url: jdbc:h2:mem:test
+username: root
+password: root
