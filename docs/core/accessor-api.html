@@ -1,0 +1,522 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Accessor API · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="generic-crud.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" >
+            
+                <span>
+            
+                    
+                    入门
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../introduction/quick-start.html">
+            
+                <a href="../introduction/quick-start.html">
+            
+                    
+                    快速开始
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../introduction/install.html">
+            
+                <a href="../introduction/install.html">
+            
+                    
+                    安装
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" >
+            
+                <span>
+            
+                    
+                    配置
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../config/global-config.html">
+            
+                <a href="../config/global-config.html">
+            
+                    
+                    全局配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../config/datasource-config.html">
+            
+                <a href="../config/datasource-config.html">
+            
+                    
+                    数据源配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" >
+            
+                <span>
+            
+                    
+                    核心功能
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="config-database.html">
+            
+                <a href="config-database.html">
+            
+                    
+                    添加数据源
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="generic-crud.html">
+            
+                <a href="generic-crud.html">
+            
+                    
+                    通用 CRUD
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4.3" data-path="accessor-api.html">
+            
+                <a href="accessor-api.html">
+            
+                    
+                    Accessor API
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Accessor API</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="accessor-api">Accessor API</h1>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function">DataSource <span class="hljs-title">getDataSource</span><span class="hljs-params">()</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x83B7;&#x53D6;&#x6570;&#x636E;&#x6E90;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function">UpdateStatement <span class="hljs-title">createUpdate</span><span class="hljs-params">(String sql)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x6267;&#x884C; DDL&#xFF0C;DML&#x8BED;&#x53E5;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">update</span><span class="hljs-params">(String sql, Object... params)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x6267;&#x884C; DDL&#xFF0C;DML&#x8BED;&#x53E5;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">update</span><span class="hljs-params">(String sql, List&lt;Object&gt; values)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x6267;&#x884C; DDL&#xFF0C;DML&#x8BED;&#x53E5;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function">BatchStatement <span class="hljs-title">createBatch</span><span class="hljs-params">()</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x521B;&#x5EFA;&#x6279;&#x91CF;&#x64CD;&#x4F5C;&#x8868;&#x8FBE;&#x5F0F;&#xFF0C;&#x6279;&#x91CF;&#x6267;&#x884C;&#x4E0D;&#x9700;&#x8981;&#x9884;&#x7F16;&#x8BD1;&#x7684; SQL &#x8BED;&#x53E5;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-keyword">int</span>[] batch(String... sqls);
+</code></pre>
+</blockquote>
+<p>&#x6279;&#x91CF;&#x6267;&#x884C; SQL &#x8BED;&#x53E5;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-keyword">int</span>[] batch(List&lt;String&gt; sqls);
+</code></pre>
+</blockquote>
+<p>&#x6279;&#x91CF;&#x6267;&#x884C; SQL &#x8BED;&#x53E5;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function">PreparedBatchStatement <span class="hljs-title">prepareBatch</span><span class="hljs-params">(String sql)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x521B;&#x5EFA;&#x9884;&#x7F16;&#x8BD1;&#x6279;&#x91CF;&#x6267;&#x884C;&#x8868;&#x8FBE;&#x5F0F;&#xFF0C;&#x6279;&#x91CF;&#x6267;&#x884C;&#x9884;&#x7F16;&#x8BD1; SQL &#x8BED;&#x53E5;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-keyword">int</span>[] batch(String sql, List&lt;List&lt;Object&gt;&gt; values);
+</code></pre>
+</blockquote>
+<p>&#x6279;&#x91CF;&#x6267;&#x884C;&#x9700;&#x8981;&#x9884;&#x7F16;&#x8BD1;&#x7684; SQL &#x8BED;&#x53E5;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function">SelectStatement <span class="hljs-title">createQuery</span><span class="hljs-params">(String sql)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x521B;&#x5EFA;&#x67E5;&#x8BE2;&#x8868;&#x8FBE;&#x5F0F;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function">SelectStatement <span class="hljs-title">query</span><span class="hljs-params">(String sql, Object... values)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x8BED;&#x53E5;&#xFF0C;&#x64CD;&#x4F5C;&#x67E5;&#x8BE2;&#x7ED3;&#x679C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; <code>SelectStatement</code> &#x7C7B;&#x4E2D;&#x7684; <code>one</code>&#xFF0C;<code>oneMap</code>&#xFF0C;<code>list</code>&#xFF0C;<code>listMap</code>&#xFF0C;<code>result</code> &#x65B9;&#x6CD5;&#x3002;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function">SelectStatement <span class="hljs-title">query</span><span class="hljs-params">(String sql, List&lt;Object&gt; values)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x6267;&#x884C;&#x67E5;&#x8BE2;&#x8BED;&#x53E5;</p>
+<blockquote>
+<pre><code class="lang-java">&lt;T&gt; <span class="hljs-function">Pager&lt;T&gt; <span class="hljs-title">page</span><span class="hljs-params">(String sql, <span class="hljs-keyword">int</span> page, <span class="hljs-keyword">int</span> limit, Class&lt;T&gt; requiredType, Object... values)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x5206;&#x9875;&#x67E5;&#x8BE2;&#xFF0C;&#x6307;&#x5B9A;&#x9875;&#x7801;&#xFF0C;&#x6BCF;&#x9875;&#x7684;&#x5927;&#x5C0F;&#x5373;&#x53EF;</p>
+<blockquote>
+<pre><code class="lang-java">&lt;T&gt; <span class="hljs-function">Pager&lt;T&gt; <span class="hljs-title">page</span><span class="hljs-params">(String sql, List&lt;Object&gt; values, <span class="hljs-keyword">int</span> page, <span class="hljs-keyword">int</span> limit, Class&lt;T&gt; requiredType)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x5206;&#x9875;&#x67E5;&#x8BE2;</p>
+<blockquote>
+<pre><code class="lang-java">&lt;T&gt; <span class="hljs-function">Pager&lt;T&gt; <span class="hljs-title">page</span><span class="hljs-params">(String sql, List&lt;Object&gt; values, <span class="hljs-keyword">int</span> page, Class&lt;T&gt; requiredType)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x5206;&#x9875;&#x67E5;&#x8BE2;&#xFF0C;&#x6307;&#x5B9A;&#x9875;&#x7801;&#x5373;&#x53EF;&#x3002;&#x91C7;&#x7528;&#x5168;&#x5C40;&#x8BBE;&#x7F6E; limit&#xFF0C;<code>GlobalConfig.defaultPageLimit(limit)</code></p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function">Pager&lt;ResultMap&gt; <span class="hljs-title">pageToMap</span><span class="hljs-params">(String sql, List&lt;Object&gt; values, <span class="hljs-keyword">int</span> page, <span class="hljs-keyword">int</span> limit)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x5206;&#x9875;&#x67E5;&#x8BE2;&#xFF0C;&#x5C06;&#x67E5;&#x8BE2;&#x7ED3;&#x679C;&#x5B58;&#x5165;&#x5230; <code>ResultMap</code> &#x4E2D;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function">Pager&lt;ResultMap&gt; <span class="hljs-title">pageToMap</span><span class="hljs-params">(String sql, List&lt;Object&gt; values, <span class="hljs-keyword">int</span> page)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x5206;&#x9875;&#x67E5;&#x8BE2;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">count</span><span class="hljs-params">(String sql, Object... values)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x7EDF;&#x8BA1;&#x67E5;&#x8BE2;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">count</span><span class="hljs-params">(String sql, List&lt;Object&gt; values)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x7EDF;&#x8BA1;&#x67E5;&#x8BE2;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function">CallStatement <span class="hljs-title">createCall</span><span class="hljs-params">(String sql)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x521B;&#x5EFA;&#x5B58;&#x50A8;&#x8FC7;&#x7A0B;&#x8C03;&#x7528;&#x8868;&#x8FBE;&#x5F0F;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function">CallStatement <span class="hljs-title">call</span><span class="hljs-params">(String sql, Object... values)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x8C03;&#x7528;&#x5B58;&#x50A8;&#x8FC7;&#x7A0B;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function">CallStatement <span class="hljs-title">call</span><span class="hljs-params">(String sql, List&lt;Object&gt; values)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x8C03;&#x7528;&#x5B58;&#x50A8;&#x8FC7;&#x7A0B;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">openTransaction</span><span class="hljs-params">()</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x5F00;&#x542F;&#x4E8B;&#x52A1;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">openTransaction</span><span class="hljs-params">(TransactionLevel level)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x5F00;&#x542F;&#x4E8B;&#x52A1;&#x5E76;&#x6307;&#x5B9A;&#x4E8B;&#x52A1;&#x7EA7;&#x522B;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">commit</span><span class="hljs-params">()</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x63D0;&#x4EA4;&#x4E8B;&#x52A1;&#x5E76;&#x4E3B;&#x52A8;&#x5173;&#x95ED;&#x6570;&#x636E;&#x5E93;&#x8FDE;&#x63A5;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">commit</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> close)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x63D0;&#x4EA4;&#x4E8B;&#x52A1;&#xFF0C;&#x6307;&#x5B9A;&#x662F;&#x5426;&#x5173;&#x95ED;&#x6570;&#x636E;&#x5E93;&#x8FDE;&#x63A5;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">rollback</span><span class="hljs-params">()</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x56DE;&#x6EDA;&#x4E8B;&#x52A1;&#x5E76;&#x5173;&#x95ED;&#x6570;&#x636E;&#x5E93;&#x8FDE;&#x63A5;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">rollback</span><span class="hljs-params">(<span class="hljs-keyword">boolean</span> close)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x56DE;&#x6EDA;&#x4E8B;&#x52A1;&#xFF0C;&#x6307;&#x5B9A;&#x662F;&#x5426;&#x5173;&#x95ED;&#x6570;&#x636E;&#x5E93;&#x8FDE;&#x63A5;</p>
+<blockquote>
+<pre><code class="lang-java"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">close</span><span class="hljs-params">()</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x5173;&#x95ED;&#x6570;&#x636E;&#x5E93;&#x8FDE;&#x63A5;</p>
+<blockquote>
+<pre><code class="lang-java">&lt;T&gt; <span class="hljs-function">T <span class="hljs-title">getMapper</span><span class="hljs-params">(Class&lt;T&gt; clazz)</span></span>;
+</code></pre>
+</blockquote>
+<p>&#x83B7;&#x53D6;&#x626B;&#x63CF;&#x7684; <code>@Mapper</code> &#x6CE8;&#x89E3;&#x7C7B;</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="generic-crud.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: 通用 CRUD">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Accessor API","level":"1.4.3","depth":2,"previous":{"title":"通用 CRUD","level":"1.4.2","depth":2,"path":"core/generic-crud.md","ref":"core/generic-crud.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"core/accessor-api.md","mtime":"2019-07-26T06:08:06.764Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-26T08:30:21.431Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
