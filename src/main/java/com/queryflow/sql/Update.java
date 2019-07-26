@@ -27,6 +27,8 @@ public class Update extends Where<Update> {
 
     /**
      * id = id + 1
+     * @param condition 条件
+     * @return Update
      */
     public Update set(String condition) {
         this.noValueColumns.add(condition);

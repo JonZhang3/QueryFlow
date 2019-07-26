@@ -27,6 +27,7 @@ public interface Accessor {
      * 创建 Update 表达式，执行增删改操作
      *
      * @param sql 要执行的 SQL
+     * @return {@link UpdateStatement}
      */
     UpdateStatement createUpdate(String sql);
 
@@ -50,6 +51,8 @@ public interface Accessor {
 
     /**
      * 创建批量操作表达式
+     *
+     * @return {@link BatchStatement}
      */
     BatchStatement createBatch();
 
@@ -71,6 +74,7 @@ public interface Accessor {
      * 创建查询表达式
      *
      * @param sql 要执行的 SQL
+     * @return {@link SelectStatement}
      */
     SelectStatement createQuery(String sql);
 
@@ -85,6 +89,7 @@ public interface Accessor {
      * @param values 参数
      * @param page   页码
      * @param limit  一页的大小
+     * @return {@link Pager}
      */
     Pager<ResultMap> pageToMap(String sql, List<Object> values, int page, int limit);
 
@@ -94,6 +99,7 @@ public interface Accessor {
      * @param sql    查询 SQL
      * @param values 参数
      * @param page   页码
+     * @return {@link Pager}
      */
     Pager<ResultMap> pageToMap(String sql, List<Object> values, int page);
 
@@ -105,6 +111,8 @@ public interface Accessor {
      * @param limit        一页的大小
      * @param requiredType Java Bean Class
      * @param values       参数
+     * @param <T>          查询结果的实例类型
+     * @return {@link Pager}
      */
     <T> Pager<T> page(String sql, int page, int limit, Class<T> requiredType, Object... values);
 
@@ -117,6 +125,7 @@ public interface Accessor {
      *
      * @param sql    查询 SQL
      * @param values 参数
+     * @return 数量
      */
     int count(String sql, Object... values);
 

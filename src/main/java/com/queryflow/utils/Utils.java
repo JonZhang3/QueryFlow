@@ -32,6 +32,8 @@ public final class Utils {
 
     /**
      * 判断指定的 Class 是否是基本数据类型或其包装类型
+     * @param clazz Class
+     * @return 如果是基本数据类型或其包装类型，返回 {@code true}。否则返回 {@code false}
      */
     public static boolean isPrimitiveOrWrapper(Class<?> clazz) {
         return (clazz.isPrimitive()) || (PRIMITIVE_WRAPPER_MAP.containsKey(clazz));
@@ -42,6 +44,7 @@ public final class Utils {
      * 该类必须有一个不包含参数的 public 构造方法
      *
      * @param clazz 指定类
+     * @param <T> 类型
      * @return 指定类的一个对象，如果参数为空，返回 {@code null}
      * @throws ClassInstantiationException 如果指定类是一个接口或者抽象类，或者不包含公共的默认构造方法，抛出该异常
      */
@@ -64,6 +67,8 @@ public final class Utils {
     /**
      * 获取指定类的无参数默认构造方法
      *
+     * @param clazz 指定类的 Class 对象
+     * @param <T> 类型
      * @return 如果传入 {@code null}，返回 {@code null}。如果没有默认构造方法，返回 {@code null}。
      * 如果默认构造方法是私有的，且不可以通过反射访问类的私有方法，返回 {@code null}。
      */
@@ -92,6 +97,7 @@ public final class Utils {
      * 获取指定字段的 getter 方法
      *
      * @param field 类的成员变量
+     * @return 字段的 getter 方法
      */
     public static Method getterMethod(Field field) {
         Assert.notNull(field);
@@ -122,6 +128,7 @@ public final class Utils {
      * 获取指定字段的 setter 方法
      *
      * @param field 类的成员变量
+     * @return 字段的 setter 方法
      */
     public static Method setterMethod(Field field) {
         Assert.notNull(field);
@@ -145,6 +152,7 @@ public final class Utils {
      * @param clazz      指定类
      * @param methodName 方法名
      * @param paramTypes 方法的参数列表
+     * @return 字段的 getter 方法
      */
     public static Method getMethod(Class<?> clazz, String methodName,
                                    Class<?>... paramTypes) {
@@ -239,7 +247,7 @@ public final class Utils {
 
     /**
      * 将小驼峰命名方式的字符串转换为 _ 命名方式
-     * userName -> user_name
+     * userName 输出 user_name
      *
      * @param src 小驼峰命名方式的字符串
      * @return 以 _ 命名方式的字符串。如果给定字符串为空，返回一个空字符串
@@ -267,12 +275,13 @@ public final class Utils {
      * 如果间隔符为空，则默认为空字符串
      * <code>
      * join(",", {"a", "b", "c"}, "!")
-     * -> "a!,b!,c!"
+     * 输出 "a!,b!,c!"
      * </code>
      *
      * @param separator 间隔符
      * @param values    字符串列表
      * @param suffix    后缀
+     * @param <T> 集合中对象的类型，默认会调用 {@code toString} 方法
      * @return 拼接后的字符串
      */
     public static <T> String join(String separator, Collection<T> values, String suffix) {
@@ -312,6 +321,7 @@ public final class Utils {
      *
      * @param separator 间隔符
      * @param values    字符串列表
+     * @param <T> 默认会调用集合中对象的 {@code toString} 方法
      * @return 拼接后的字符串
      */
     public static <T> String join(String separator, Collection<T> values) {

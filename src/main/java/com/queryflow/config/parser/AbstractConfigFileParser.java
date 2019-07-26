@@ -19,6 +19,7 @@ public abstract class AbstractConfigFileParser<T> implements ConfigFileParser<T>
      *
      * @param path 配置文件路径
      * @throws FileNotFoundException 如果指定的文件不存在，抛出该异常
+     * @return FileReader
      */
     protected FileReader parsePath(String path) throws FileNotFoundException {
         if (path.startsWith(CLASSPATH)) {

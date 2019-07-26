@@ -18,8 +18,9 @@ public interface ConnectionExecutor {
     /**
      * 执行 UPDATE，DELETE，INSERT，DDL 语句
      *
-     * @param sql    要执行的 SQL
-     * @param params 预编译 SQL 中对应占位符数据
+     * @param sql          要执行的 SQL
+     * @param params       预编译 SQL 中对应占位符数据
+     * @param interceptors 拦截器
      * @return 返回受影响的记录条数
      */
     int update(String sql, List<Object> params, Interceptors interceptors);
@@ -32,6 +33,8 @@ public interface ConnectionExecutor {
      * @param keyColumnNames 主键所在列名称
      * @param interceptors   拦截器
      * @param handler        返回结果处理函数
+     * @param <T>            结果的实例类型
+     * @return 操作结果
      */
     <T> T insertGetKey(String sql, List<Object> params, String[] keyColumnNames,
                        Interceptors interceptors, ResultSetHandler<T> handler);
@@ -44,6 +47,8 @@ public interface ConnectionExecutor {
      * @param keyColumnNames 主键所在列名称
      * @param interceptors   拦截器
      * @param handler        返回结果处理函数
+     * @param <T>            结果的实例类型
+     * @return 操作结果
      */
     <T> T batchInsertGetKes(String sql, List<List<Object>> params,
                             String[] keyColumnNames, Interceptors interceptors,
@@ -75,6 +80,7 @@ public interface ConnectionExecutor {
      * @param params       参数
      * @param interceptors 拦截器
      * @param handler      查询结果处理函数
+     * @param <T>          结果的实例类型
      * @return 返回数据处理结果
      */
     <T> T query(String sql, List<Object> params, Interceptors interceptors,
@@ -87,6 +93,7 @@ public interface ConnectionExecutor {
      * @param params       参数
      * @param interceptors 拦截器
      * @param beanClass    Java Bean Class
+     * @param <T>          结果的实例类型
      * @return Java Bean
      */
     <T> T queryForBean(String sql, List<Object> params, Interceptors interceptors, Class<T> beanClass);
@@ -98,6 +105,7 @@ public interface ConnectionExecutor {
      * @param params       参数
      * @param interceptors 拦截器
      * @param beanClass    Java Bean Class
+     * @param <T>          结果的实例类型
      * @return Java Bean List
      */
     <T> List<T> queryForListBean(String sql, List<Object> params, Interceptors interceptors, Class<T> beanClass);
@@ -141,6 +149,8 @@ public interface ConnectionExecutor {
      * @param params       参数
      * @param interceptors 拦截器
      * @param handler      返回数据处理函数
+     * @param <T>          结果的实例类型
+     * @return 结果
      */
     <T> T call(String sql, List<Object> params, Interceptors interceptors,
                ResultSetHandler<T> handler);

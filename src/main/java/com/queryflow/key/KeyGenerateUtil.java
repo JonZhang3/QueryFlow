@@ -47,9 +47,10 @@ public final class KeyGenerateUtil {
     }
 
     /**
-     * Default is snowflake key generator.
+     * 生成 ID，默认为使用 snowflake 算法
      *
      * @see SnowflakeKeyGenerator
+     * @return 生成的 ID
      */
     public static Long generateId() {
         return (Long) generators.get(SnowflakeKeyGenerator.class).generate();

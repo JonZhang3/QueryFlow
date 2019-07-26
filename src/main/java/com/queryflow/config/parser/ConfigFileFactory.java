@@ -30,6 +30,7 @@ public class ConfigFileFactory {
      * queryflow.yaml、queryflow.yml 或 queryflow.properties
      *
      * @param path 配置文件路径
+     * @return 数据源配置
      */
     public static List<DatabaseConfig> parseConfigFile(String path) {
         File configFile;

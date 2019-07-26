@@ -43,6 +43,8 @@ public final class JdbcUtil {
 
     /**
      * 关闭 Statement
+     *
+     * @param statement Statement
      */
     public static void close(Statement statement) {
         if (statement != null) {
@@ -57,7 +59,7 @@ public final class JdbcUtil {
     /**
      * 关闭 ResultSet
      *
-     * @param resultSet
+     * @param resultSet ResultSet
      */
     public static void close(ResultSet resultSet) {
         if (resultSet != null) {
@@ -71,6 +73,9 @@ public final class JdbcUtil {
 
     /**
      * 同时关闭 ResultSet 和 Statement
+     *
+     * @param rs        ResultSet
+     * @param statement Statement
      */
     public static void close(ResultSet rs, Statement statement) {
         close(rs);
@@ -168,6 +173,7 @@ public final class JdbcUtil {
      * byte[]，Blob，Clob
      *
      * @param type 类类型
+     * @return 如果满足上述条件，返回 {@code true}
      */
     public static boolean isJdbcCommonClass(Type type) {
         Assert.notNull(type);
@@ -196,6 +202,7 @@ public final class JdbcUtil {
      * @param index     列索引，从 1 开始
      * @param valueType 目标数据类型
      * @return 值
+     * @throws SQLException 异常
      */
     public static Object getResultSetValue(ResultSet rs, int index, Class<?> valueType) throws SQLException {
         Object value;
@@ -281,6 +288,7 @@ public final class JdbcUtil {
      * @param metaData ResultSet 元数据
      * @param index    列索引
      * @return 列名
+     * @throws SQLException 异常
      */
     public static String getColumnName(ResultSetMetaData metaData, int index) throws SQLException {
         String columnName = metaData.getColumnLabel(index);

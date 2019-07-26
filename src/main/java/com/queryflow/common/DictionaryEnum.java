@@ -1,14 +1,20 @@
 package com.queryflow.common;
 
-import java.io.Serializable;
-
 /**
  * Dictionary enum of interface.
  */
-public interface DictionaryEnum {
+public interface DictionaryEnum<T> {
 
-    Serializable getCode();
+    /**
+     * 代码值
+     * @return 代码值
+     */
+    T getCode();
 
+    /**
+     * 代码值示意
+     * @return String
+     */
     String getValue();
 
 }

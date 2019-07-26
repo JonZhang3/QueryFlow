@@ -16,11 +16,15 @@ public interface ConnectionManager {
 
     /**
      * 获取数据源
+     *
+     * @return {@link DataSource}
      */
     DataSource getDataSource();
 
     /**
      * 获取数据库连接
+     *
+     * @return {@link Connection}
      */
     Connection getConnection();
 

@@ -110,6 +110,7 @@ public class GlobalConfig {
      * Registers the implementation class of {@code KeyGenerator} by yourself.
      *
      * @param clazz the implementation class of {@code KeyGenerator}, must not null
+     * @return GlobalConfig
      */
     public GlobalConfig registerKeyGenerator(Class<? extends KeyGenerator> clazz) {
         KeyGenerateUtil.registerKeyGenerator(clazz);
@@ -134,6 +135,7 @@ public class GlobalConfig {
      *
      * @param seconds 操作执行超时时间。如果设置为 {@code 0}，表示没有限制。单位：秒
      * @see java.sql.Statement#setQueryTimeout(int)
+     * @return GlobalConfig
      */
     public GlobalConfig queryTimeout(int seconds) {
         if (seconds >= 0) {
@@ -148,6 +150,7 @@ public class GlobalConfig {
      *
      * @param max 最大行数。如果设置为 {@code 0}，表示没有限制
      * @see java.sql.Statement#setMaxRows(int)
+     * @return GlobalConfig
      */
     public GlobalConfig queryMaxRows(int max) {
         if (max >= 0) {
@@ -166,6 +169,7 @@ public class GlobalConfig {
      * 为了最大限度的实现可移植，值要尽可能大于 256。
      *
      * @param max 最大的字节量。如果设置为 {@code 0}，表示没有限制
+     * @return GlobalConfig
      */
     public GlobalConfig maxFieldSize(int max) {
         if (max >= 0) {

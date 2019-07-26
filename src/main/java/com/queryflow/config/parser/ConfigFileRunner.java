@@ -5,6 +5,7 @@ import com.queryflow.config.GlobalConfig;
 import com.queryflow.reflection.Reflector;
 import com.queryflow.reflection.invoker.FieldInvoker;
 import com.queryflow.utils.Converts;
+import com.queryflow.utils.Utils;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -57,6 +58,9 @@ class ConfigFileRunner {
             if (value != null) {
                 invoker.setValue(databaseConfig, Converts.to(invoker.getType(), value));
             }
+        }
+        if(Utils.isEmpty(databaseConfig.getValidationQuery())) {
+            databaseConfig.setTestWhileIdle(false);
         }
         return databaseConfig;
     }

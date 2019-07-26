@@ -95,9 +95,9 @@ public class Reflector {
 
     /**
      * 获取目标对象中指定字段的值
-     * @param fieldName
-     * @param target
-     * @return
+     * @param fieldName 字段名称
+     * @param target 类的实例对象
+     * @return the field value
      */
     public Object getFieldValue(String fieldName, Object target) {
         FieldInvoker fieldInvoker = fieldInvokers.get(fieldName);
@@ -137,6 +137,7 @@ public class Reflector {
 
     /**
      * 类型
+     * @return Class
      */
     public Class<?> getType() {
         return type;
@@ -152,6 +153,7 @@ public class Reflector {
 
     /**
      * 遍历类的成员变量
+     * @return {@link FieldInvoker}
      */
     public Iterator<FieldInvoker> fieldIterator() {
         return fieldInvokers.values().iterator();
@@ -159,6 +161,7 @@ public class Reflector {
 
     /**
      * 遍历类方法
+     * @return {@link MethodInvoker}
      */
     public Iterator<MethodInvoker> methodIterator() {
         return methodInvokers.values().iterator();
@@ -170,6 +173,7 @@ public class Reflector {
 
     /**
      * 返回类中包含方法的数量
+     * @return 返回类中方法的数量
      */
     public int methodSize() {
         return methodInvokers.size();

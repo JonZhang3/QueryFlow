@@ -24,6 +24,7 @@ public class DatabaseConfig {
         = DruidAbstractDataSource.DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;// 间隔多久进行一次检测，检测需要关闭的空闲连接， ms
     private long minEvictableIdleTimeMillis =
         DruidAbstractDataSource.DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS;// 一个连接在池中最小生存时间，ms
+    private boolean testWhileIdle = false;
     private String validationQuery = DruidAbstractDataSource.DEFAULT_VALIDATION_QUERY;
     private int validationQueryTimeout = 0;
     private boolean poolPreparedStatements = false;// 是否打开 PSCache
@@ -184,4 +185,11 @@ public class DatabaseConfig {
         return this;
     }
 
+    public boolean isTestWhileIdle() {
+        return testWhileIdle;
+    }
+
+    public void setTestWhileIdle(boolean testWhileIdle) {
+        this.testWhileIdle = testWhileIdle;
+    }
 }

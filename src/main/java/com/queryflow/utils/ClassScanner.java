@@ -13,7 +13,7 @@ import java.util.jar.JarFile;
  * 类扫描工具类，可指定扫描的包，可设置过滤器
  * <code>
  *     ClassScanner.newScanner()
- *         .setFilter((clazz) -> true)
+ *         .setFilter(filter)
  *         .scan();
  * </code>
  *
