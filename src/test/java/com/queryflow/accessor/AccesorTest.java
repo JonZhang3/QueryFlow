@@ -14,6 +14,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AccesorTest {
@@ -26,8 +28,7 @@ public class AccesorTest {
         config.setUrl("jdbc:mysql://X.X.X.X:3306/test?useSSL=false");
         config.setUsername("root");
         config.setPassword("root");
-        builder.fromFile()
-            .addDatabase(config)
+        builder.addDatabase(config)
             .scanPackage("com.queryflow")
             .build(true);
         createTables();
@@ -43,7 +44,7 @@ public class AccesorTest {
         AccessorFactory.accessor().update(userSql);
         String orderSql = "CREATE TABLE orders (id bigint(20) NOT NULL,name varchar(255) DEFAULT NULL,status int(11) DEFAULT NULL,settlementStatus int(11) DEFAULT NULL,PRIMARY KEY(id))";
         AccessorFactory.accessor().update(orderSql);
-        String goodsSql = "CREATE TABLE goods(id int(11) NOT NULL AUTO_INCREMENT,name varchar(255) DEFAULT NULL,PRIMARY KEY(id) INDEX BTREE)";
+        String goodsSql = "CREATE TABLE goods(id int(11) NOT NULL AUTO_INCREMENT,name varchar(255) DEFAULT NULL,PRIMARY KEY(id))";
         AccessorFactory.accessor().update(goodsSql);
     }
 
@@ -216,6 +217,29 @@ public class AccesorTest {
             .registerOutParameter("sum", DataType.INTEGER)
             .execute();
         assertEquals(10, parameters.getInteger("sum").intValue());
+    }
+
+    @Test
+    public void testBatch() {
+        SqlBox.delete("user").execute();
+
+        String sql = "INSERT INTO user VALUES (?,?,?,?)";
+        List<List<Object>> values = new ArrayList<>();
+        values.add(Arrays.asList(KeyGenerateUtil.generateId(), "张三", "123", 1));
+        values.add(Arrays.asList(KeyGenerateUtil.generateId(), "zhangsan", "123", 2));
+        values.add(Arrays.asList(KeyGenerateUtil.generateId(), "李四", "123", 3));
+        values.add(Arrays.asList(KeyGenerateUtil.generateId(), "lisi", "123", 4));
+        int[] batch = A.batch(sql, values);
+        assertEquals(4, A.count("select * from user"));
+
+        SqlBox.delete("user").execute();
+
+        A.prepareBatch("INSERT INTO user VALUES (?,?,?,?)")
+            .bind(KeyGenerateUtil.generateId()).bind("张三").bind("123").bind(1).add()
+            .add(Arrays.asList(KeyGenerateUtil.generateId(), "zhangsan", "123", 2))
+            .add(KeyGenerateUtil.generateId(), "lisi", "123", 3)
+            .execute();
+        assertEquals(3, A.count("select * from user"));
     }
 
 }

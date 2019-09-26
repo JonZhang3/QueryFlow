@@ -99,7 +99,7 @@ public class DefaultAccessor implements Accessor {
         PreparedBatchStatement preparedBatch = prepareBatch(sql);
         if (values != null) {
             for (List<Object> value : values) {
-                preparedBatch.bindList(value);
+                preparedBatch.add(value);
             }
             int[] rows = preparedBatch.execute();
             if (GlobalConfig.isCloseAfterExecuted()) {

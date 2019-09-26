@@ -14,6 +14,15 @@ QueryFlow 是一款持久层框架，旨在使用者可以像水流一样流畅�
 - **多数据源**：支持配置多数据源，且配置使用方便
 - **存储过程**：方便的存储过程调用，快捷注册输出参数
 
+## 安装（Maven）
+```xml
+<dependency>
+    <groupId>com.github.jonzhang3</groupId>
+    <artifactId>queryflow</artifactId>
+    <version>1.0.1</version>
+</dependency>
+```
+
 ## 文档
 [文档](https://jonzhang3.github.io/QueryFlow)
 

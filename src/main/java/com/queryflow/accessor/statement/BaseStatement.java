@@ -29,7 +29,7 @@ public abstract class BaseStatement<T extends BaseStatement> extends Statement<T
     }
 
     public T bindList(List<Object> values) {
-        if(values != null && values.isEmpty()) {
+        if(values != null && !values.isEmpty()) {
             params.addAll(values);
         }
         return (T) this;

@@ -3,6 +3,7 @@ package com.queryflow.accessor.statement;
 import com.queryflow.accessor.connection.ConnectionExecutor;
 import com.queryflow.common.ResultMap;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,26 +16,18 @@ public class PreparedBatchStatement extends BaseStatement<PreparedBatchStatement
     }
 
     public PreparedBatchStatement add() {
-        values.add(params);
+        values.add(new LinkedList<>(params));
         params.clear();
         return this;
     }
 
     public PreparedBatchStatement add(List<Object> params) {
-        for (Object param : params) {
-            bind(param);
-        }
-        add();
+        this.values.add(new LinkedList<>(params));
         return this;
     }
 
     public PreparedBatchStatement add(Object... params) {
-        if(params != null) {
-            for (Object param : params) {
-                bind(param);
-            }
-            add();
-        }
+        this.values.add(Arrays.asList(params));
         return this;
     }
 
