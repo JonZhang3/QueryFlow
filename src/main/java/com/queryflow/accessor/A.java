@@ -5,10 +5,8 @@ import com.queryflow.common.DataType;
 import com.queryflow.common.TransactionLevel;
 import com.queryflow.page.Pager;
 import com.queryflow.common.ResultMap;
-import com.queryflow.sql.SqlBox;
 
 import javax.sql.DataSource;
-import java.sql.PreparedStatement;
 import java.util.List;
 
 public final class A {

@@ -2,7 +2,6 @@ package com.queryflow.accessor.runner;
 
 import com.queryflow.accessor.interceptor.InterceptorHelper;
 import com.queryflow.accessor.interceptor.Interceptors;
-import com.queryflow.config.GlobalConfig;
 import com.queryflow.common.DataType;
 import com.queryflow.utils.Utils;
 
