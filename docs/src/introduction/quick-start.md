@@ -123,12 +123,15 @@ Sqlbox.select("userName", "age")
 > 分页查询
 
 ```java
-Pager<User> users = A.fetchPage(sql, params, page, limit, User.class);
+Pager<User> users = A.page(sql, params, page, limit, User.class);
 // 你也可以不提供 limit 参数，使用默认的 limit (10)，也可以在 GlobalConfig 中或配置文件进行配置
-Pager<User> users = A.fetchPage(sql, params, page,  User.class);
+Pager<User> users = A.page(sql, params, page,  User.class);
 
 // Pager 中的参数说明
-
+//     total 总记录数量
+//     page 当前页码
+//     limit 每页记录数
+//     pages 总页数
 ```
 
 > 注：QueryFlow 的所有有关数据库的操作，都不会主动关闭数据库连接，需要在手动关闭数据库连接。也可以在全局配置中配置没执行一个操作立即关闭数据库连接 `GlobalConfig.closeAfterExecuted(true)` 。

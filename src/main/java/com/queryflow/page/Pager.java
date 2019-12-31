@@ -26,7 +26,7 @@ public class Pager<T> implements Serializable {
         this.total = total;
         this.limit = limit;
         this.pages = total % limit == 0 ? total / limit : total / limit + 1;
-        if (page <= 0) {
+        if (page <= 0 || this.pages == 0) {
             page = 1;
         } else if (page > pages) {
             page = pages;

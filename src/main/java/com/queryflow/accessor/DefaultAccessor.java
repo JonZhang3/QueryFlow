@@ -151,7 +151,7 @@ public class DefaultAccessor implements Accessor {
         if (process == null) {
             throw new QueryFlowException("not support the database");
         }
-        if (limit == 0) {
+        if (limit <= 0) {
             limit = GlobalConfig.getDefaultPageLimit();
         }
         Pager<T> pager = new Pager<>(total, page, limit, null);
