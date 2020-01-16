@@ -40,7 +40,7 @@ public class Update extends Where<Update> {
             .append(table)
             .append(" SET ");
         sql.append(Utils.join(", ", columns, " = ?"));
-        if (noValueColumns.isEmpty()) {
+        if (!noValueColumns.isEmpty()) {
             sql.append(", ");
         }
         sql.append(Utils.join(", ", noValueColumns)).append(appender);
