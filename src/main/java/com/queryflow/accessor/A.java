@@ -1,7 +1,6 @@
 package com.queryflow.accessor;
 
 import com.queryflow.accessor.statement.*;
-import com.queryflow.common.DataType;
 import com.queryflow.common.TransactionLevel;
 import com.queryflow.page.Pager;
 import com.queryflow.common.ResultMap;
@@ -140,13 +139,6 @@ public final class A {
 
     public static void close() {
         AccessorManager.accessor().close();
-    }
-
-    public static void main(String[] args) {
-        OutParameters outParameters = A.createCall("")
-            .bind("")// dsdsds
-            .registerOutParameter("", DataType.INTEGER).execute();
-        outParameters.getInteger("");
     }
 
 }

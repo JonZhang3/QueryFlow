@@ -1,10 +1,16 @@
 package com.queryflow.utils;
 
+import com.queryflow.common.QueryFlowException;
 import com.queryflow.common.function.Action2;
 
 import java.io.*;
 import java.lang.reflect.*;
+import java.net.JarURLConnection;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
+import java.util.jar.JarFile;
 
 /**
  * 通用工具类
@@ -28,6 +34,29 @@ public final class Utils {
     }
 
     private Utils() {
+    }
+
+    /**
+     * 获取默认的 {@code ClassLoader}
+     *
+     * @return 默认的 {@code ClassLoader}
+     */
+    public static ClassLoader getDefaultClassLoader() {
+        ClassLoader cl = null;
+        try {
+            cl = Thread.currentThread().getContextClassLoader();
+        } catch (Throwable ignore) {
+        }
+        if(cl == null) {
+            cl = Utils.class.getClassLoader();
+            if(cl == null) {
+                try {
+                    cl = ClassLoader.getSystemClassLoader();
+                } catch (Throwable ignore) {
+                }
+            }
+        }
+        return cl;
     }
 
     /**
@@ -393,6 +422,35 @@ public final class Utils {
             result.put((String) entry.getKey(), entry.getValue());
         }
         return result;
+    }
+
+    public static File findHomeDir() {
+        try {
+            URL location = Utils.class.getProtectionDomain().getCodeSource().getLocation();
+            URLConnection connection = location.openConnection();
+            File source;
+            if(connection instanceof JarURLConnection) {
+                source = getRootJarFile(((JarURLConnection) connection).getJarFile());
+            } else {
+                source = new File(location.toURI());
+            }
+            source = source.getAbsoluteFile();
+            if(source.isFile()) {
+                source = source.getParentFile();
+            }
+            return source.getAbsoluteFile();
+        } catch (IOException | URISyntaxException e) {
+            throw new QueryFlowException(e);
+        }
+    }
+
+    private static File getRootJarFile(JarFile jarFile) {
+        String name = jarFile.getName();
+        int separator = name.indexOf("!/");
+        if (separator > 0) {
+            name = name.substring(0, separator);
+        }
+        return new File(name);
     }
 
     private static void recursiveListFiles(File dir, String relativePath, Action2<File, String> action2) {

@@ -2,7 +2,8 @@
 
 ### 配置文件
 
-在使用配置文件配置数据源时，如果不主动提供配置文件路径，默认会在 classpath 跟路径下寻找配置文件，默认的配置文件名为 `queryflow.yaml` 或 `queryflow.yml` 或 `queryflow.properties` ，优先寻找 `queryflow.yaml` 。
+在使用配置文件配置数据源时，如果不主动提供配置文件路径，
+默认会依次项目部署目录（SpringBoot）、项目部署目录下的 conf 目录、 classpath 路径下寻找配置文件，默认的配置文件名为 `queryflow.yaml` 或 `queryflow.yml` 或 `queryflow.properties` ，优先寻找 `queryflow.yaml` 。
 
 配置文件可采用 YAML 格式，也可以采用 Properties 格式。如果采用 Properties 格式配置文件，限制是只能配置一个数据源。
 
@@ -68,8 +69,8 @@ datasources:
     password: <string> 数据库密码
     maxActive: <int> 连接池保存的最大连接数
     initialSize: <int> 连接池初始连接数
-    minIdle: <int> 
-    maxWait: <int> 
+    minIdle: <int>
+    maxWait: <int>
     timeBetweenEvictionRunsMillis: <long> 设置多久进行一次空闲连接的检测，单位 ms
     minEvictableIdleTimeMillis: <long> 设置一个连接在连接池中的最小生存时间，单位 ms
     validationQuery: <string> 验证 SQL，验证数据库是否可以连接

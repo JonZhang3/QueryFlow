@@ -19,9 +19,9 @@ import java.util.*;
  */
 public class AccessorFactoryBuilder {
 
-    private List<DatabaseConfig> databaseConfigs = new ArrayList<>(2);
-    private Map<String, DataSource> dataSources = new HashMap<>();
-    private List<String> scanPackageNames = new ArrayList<>(2);
+    private final List<DatabaseConfig> databaseConfigs = new ArrayList<>(2);
+    private final Map<String, DataSource> dataSources = new HashMap<>();
+    private final List<String> scanPackageNames = new ArrayList<>(2);
 
     public AccessorFactoryBuilder fromFile() {
         fromFile(null);

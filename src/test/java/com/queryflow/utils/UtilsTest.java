@@ -7,7 +7,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,6 +119,11 @@ public class UtilsTest {
         list.add("d");
         assertEquals("a!,b!,c!,d!", Utils.join(",", list, "!"));
         assertEquals("abcd", Utils.join("", list));
+    }
+
+    @Test
+    public void test() throws IOException, URISyntaxException {
+        System.out.println(Utils.findHomeDir());
     }
 
 }

@@ -4,7 +4,7 @@
 
 QueryFlow 是一款持久层框架，旨在使用者可以像水流一样流畅、简单、快速地编写数据库操作代码。
 
->  该文档适用于 QueryFlow V1.0.3
+>  该文档适用于 QueryFlow V1.0.4
 
 ## 特性
 - **方便自由**：既可以直接编写复杂 SQL，也可以使用条件构造器或直接传入一个 Entity 来对数据库进行 CRUD 操作
@@ -21,7 +21,7 @@ QueryFlow 是一款持久层框架，旨在使用者可以像水流一样流畅�
 <dependency>
     <groupId>com.github.jonzhang3</groupId>
     <artifactId>queryflow</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 </dependency>
 ```
 

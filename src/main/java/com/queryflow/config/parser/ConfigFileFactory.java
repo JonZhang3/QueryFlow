@@ -5,6 +5,7 @@ import com.queryflow.config.DatabaseConfig;
 import com.queryflow.utils.Utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -17,9 +18,10 @@ import java.util.Map;
  */
 public class ConfigFileFactory {
 
-    private static final String DEFAULT_CONFIG_FILE_YAML = "/queryflow.yaml";
-    private static final String DEFAULT_CONFIG_FILE_YML = "/queryflow.yml";
-    private static final String DEFAULT_CONFIG_FILE_PROPERTIES = "/queryflow.properties";
+    private static final String DEFAULT_CONFIG_DIR_NAME = "conf";
+    private static final String DEFAULT_CONFIG_FILE_YAML = "queryflow.yaml";
+    private static final String DEFAULT_CONFIG_FILE_YML = "queryflow.yml";
+    private static final String DEFAULT_CONFIG_FILE_PROPERTIES = "queryflow.properties";
 
     private ConfigFileFactory() {
     }
@@ -35,34 +37,87 @@ public class ConfigFileFactory {
     public static List<DatabaseConfig> parseConfigFile(String path) {
         File configFile;
         if (Utils.isEmpty(path)) {
-            URL resource = ConfigFileFactory.class.getResource(DEFAULT_CONFIG_FILE_YAML);
-            if (resource == null) {
-                resource = ConfigFileFactory.class.getResource(DEFAULT_CONFIG_FILE_YML);
+            configFile = findConfigFile();
+            if(configFile == null) {
+                URL url = findConfigFileFromClasspath();
+                if(url == null) {
+                    throw new QueryFlowException("not found the config file, default queryflow.yaml or queryflow.properties");
+                }
+                String filePath = url.getPath();
+                String suffix = filePath.substring(filePath.lastIndexOf("."));
+                ConfigFileParser<Map<String, Object>> fileParser;
+                if(suffix.equals(".yaml") || suffix.equals(".yml")) {
+                    fileParser = new YamlConfigFileParser();
+                } else {
+                    fileParser = new PropertiesConfigFileParser();
+                }
+                ConfigFileRunner runner = new ConfigFileRunner();
+                try {
+                    return runner.run(fileParser.parse(url.openStream()));
+                } catch (IOException e) {
+                    throw new QueryFlowException(e);
+                }
             }
-            if (resource == null) {
-                resource = ConfigFileFactory.class.getResource(DEFAULT_CONFIG_FILE_PROPERTIES);
-            }
-            if (resource == null) {
-                throw new QueryFlowException("the config file not found, default queryflow.yaml or queryflow.properties");
-            }
-            configFile = new File(resource.getFile());
         } else {
             configFile = new File(path);
             if (!configFile.exists()) {
-                throw new QueryFlowException("the config file not found, file: " + path);
+                throw new QueryFlowException("the config file not found, in: " + path);
+            }
+            if(!configFile.isFile()) {
+                throw new QueryFlowException("the " + path + " is not a file");
             }
         }
         String fileName = configFile.getName();
         ConfigFileParser<Map<String, Object>> fileParser;
-        if (fileName.endsWith(".yaml")) {
+        if (fileName.endsWith(".yaml") || fileName.endsWith(".yml")) {
             fileParser = new YamlConfigFileParser();
         } else if (fileName.endsWith(".properties")) {
             fileParser = new PropertiesConfigFileParser();
         } else {
-            throw new QueryFlowException("unknow type of file");
+            throw new QueryFlowException("unknown type of file");
         }
         ConfigFileRunner runner = new ConfigFileRunner();
         return runner.run(fileParser.parse(configFile));
+    }
+
+    private static URL findConfigFileFromClasspath() {
+        ClassLoader cl = Utils.getDefaultClassLoader();
+        URL resource = cl.getResource(DEFAULT_CONFIG_FILE_YAML);
+        if(resource == null) {
+            resource = cl.getResource(DEFAULT_CONFIG_FILE_YML);
+        }
+        if(resource == null) {
+            resource = cl.getResource(DEFAULT_CONFIG_FILE_PROPERTIES);
+        }
+        return resource;
+    }
+
+    private static File findConfigFile() {
+        File homeDir = Utils.findHomeDir();
+        File configFile = checkExists(homeDir);
+        if(configFile == null) {
+            homeDir = new File(homeDir, DEFAULT_CONFIG_DIR_NAME);
+            if(homeDir.exists() && homeDir.isDirectory()) {
+                configFile = checkExists(homeDir);
+            }
+        }
+        return configFile;
+    }
+
+    private static File checkExists(File dir) {
+        File configFile = new File(dir, DEFAULT_CONFIG_FILE_YAML);
+        if(configFile.exists() && configFile.isFile()) {
+            return configFile;
+        }
+        configFile = new File(dir, DEFAULT_CONFIG_FILE_YML);
+        if(configFile.exists() && configFile.isFile()) {
+            return configFile;
+        }
+        configFile = new File(dir, DEFAULT_CONFIG_FILE_PROPERTIES);
+        if(configFile.exists() && configFile.isFile()) {
+            return configFile;
+        }
+        return null;
     }
 
 }

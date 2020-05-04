@@ -41,9 +41,4 @@ public final class SimplePageSqlProcessSelector implements PageSqlProcessSelecto
         return process;
     }
 
-    public static void main(String[] args) {
-        PageSqlProcessSelector selector = new SimplePageSqlProcessSelector();
-        selector.select(DbType.MYSQL.value());
-    }
-
 }
