@@ -2,7 +2,7 @@ package com.queryflow.accessor;
 
 public interface AccessorFactory {
 
-    String DEFAULT_TAG = "queryflow";
+    String DEFAULT_TAG = "default";
 
     Accessor getAccessor();
 

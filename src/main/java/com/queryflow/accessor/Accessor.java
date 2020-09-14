@@ -1,5 +1,6 @@
 package com.queryflow.accessor;
 
+import com.queryflow.accessor.handler.ResultSetHandler;
 import com.queryflow.accessor.statement.*;
 import com.queryflow.common.TransactionLevel;
 import com.queryflow.page.Pager;
@@ -119,6 +120,10 @@ public interface Accessor {
     <T> Pager<T> page(String sql, List<Object> values, int page, int limit, Class<T> requiredType);
 
     <T> Pager<T> page(String sql, List<Object> values, int page, Class<T> requiredType);
+
+    <T> Pager<T> page(String sql, List<Object> values, int page, ResultSetHandler<List<T>> handler);
+
+    <T> Pager<T> page(String sql, List<Object> values, int page, int limit, ResultSetHandler<List<T>> handler);
 
     /**
      * 对 SQL 查询的结果执行 Count 操作

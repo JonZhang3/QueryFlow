@@ -1,5 +1,6 @@
 package com.queryflow.accessor;
 
+import com.queryflow.accessor.handler.ResultSetHandler;
 import com.queryflow.common.QueryFlowException;
 import com.queryflow.accessor.connection.DataExecutor;
 import com.queryflow.accessor.statement.*;
@@ -146,11 +147,11 @@ public class DefaultAccessor implements Accessor {
 
     @Override
     public <T> Pager<T> page(String sql, List<Object> values, int page, int limit, Class<T> requiredType) {
-        int total = count(sql, values, false);
         PageSqlMatchProcess process = pageSelector.select(dbType.value());
         if (process == null) {
             throw new QueryFlowException("not support the database");
         }
+        int total = count(sql, values, false);
         if (limit <= 0) {
             limit = GlobalConfig.getDefaultPageLimit();
         }
@@ -173,6 +174,32 @@ public class DefaultAccessor implements Accessor {
     @Override
     public <T> Pager<T> page(String sql, List<Object> values, int page, Class<T> requiredType) {
         return page(sql, values, page, 0, requiredType);
+    }
+
+    @Override
+    public <T> Pager<T> page(String sql, List<Object> values, int page, ResultSetHandler<List<T>> handler) {
+        return page(sql, values, page, 0, handler);
+    }
+
+    @Override
+    public <T> Pager<T> page(String sql, List<Object> values, int page, int limit, ResultSetHandler<List<T>> handler) {
+        PageSqlMatchProcess process = pageSelector.select(dbType.value());
+        if (process == null) {
+            throw new QueryFlowException("not support the database");
+        }
+        int total = count(sql, values, false);
+        if (limit <= 0) {
+            limit = GlobalConfig.getDefaultPageLimit();
+        }
+        Pager<T> pager = new Pager<>(total, page, limit, null);
+        String pageSql = process.sqlProcess(sql, pager.getStart(), limit);
+        SelectStatement statement = createQuery(pageSql).bindList(values);
+        List<T> result = statement.result(handler);
+        pager.setRecords(result);
+        if (GlobalConfig.isCloseAfterExecuted()) {
+            close();
+        }
+        return pager;
     }
 
     @Override
@@ -215,7 +242,7 @@ public class DefaultAccessor implements Accessor {
 
     @Override
     public void openTransaction() {
-        openTransaction((TransactionLevel) null);
+        openTransaction(null);
     }
 
     @Override

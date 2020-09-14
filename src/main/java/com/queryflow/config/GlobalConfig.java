@@ -38,7 +38,7 @@ public class GlobalConfig {
 
     // 指定是否在每次执行后关闭数据库连接
     // false 表示不关闭，需要手动关闭
-    private boolean closeAfterExecuted = false;
+    private boolean closeAfterExecuted = true;
 
     private GlobalConfig() {
     }

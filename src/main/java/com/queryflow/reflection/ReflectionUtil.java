@@ -1,12 +1,12 @@
 package com.queryflow.reflection;
 
 import com.queryflow.cache.Cache;
-import com.queryflow.cache.impl.LRUCache;
+import com.queryflow.cache.impl.LFUCache;
 import com.queryflow.reflection.entity.EntityReflector;
 
 public class ReflectionUtil {
 
-    private static final Cache<Class<?>, Reflector> CACHE = new LRUCache<>();
+    private static final Cache<Class<?>, Reflector> CACHE = new LFUCache<>();
 
     private ReflectionUtil() {}
 

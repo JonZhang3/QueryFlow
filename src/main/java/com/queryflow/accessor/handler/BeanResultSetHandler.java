@@ -1,6 +1,6 @@
 package com.queryflow.accessor.handler;
 
-import com.queryflow.cache.impl.LRUCache;
+import com.queryflow.cache.impl.LFUCache;
 import com.queryflow.config.GlobalConfig;
 import com.queryflow.reflection.ReflectionUtil;
 import com.queryflow.reflection.Reflector;
@@ -25,8 +25,8 @@ import java.util.Map;
 public class BeanResultSetHandler<T> implements ResultSetHandler {
 
     // Java Bean 反射缓存
-    private static final LRUCache<Class<?>, BeanResultSetHandler>
-        BEAN_HANDLER_CACHE = new LRUCache<>(20);
+    private static final LFUCache<Class<?>, BeanResultSetHandler>
+        BEAN_HANDLER_CACHE = new LFUCache<>(20);
 
     @SuppressWarnings("unchecked")
     public static <R> BeanResultSetHandler<R> newBeanHandler(Class<R> requiredType) {

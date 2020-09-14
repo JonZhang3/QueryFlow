@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class LRUCache<K, V> extends LinkedHashMap<K, ValueObject<K, V>> implements Cache<K, V> {
+public class LFUCache<K, V> extends LinkedHashMap<K, ValueObject<K, V>> implements Cache<K, V> {
 
     private static final int DEFAULT_MAX_SIZE = 300;
 
@@ -21,12 +21,12 @@ public class LRUCache<K, V> extends LinkedHashMap<K, ValueObject<K, V>> implemen
 
     private final int maxSize;
 
-    public LRUCache() {
+    public LFUCache() {
         this(DEFAULT_MAX_SIZE);
     }
 
-    public LRUCache(int maxSize) {
-        super(16, 0.75f, false);
+    public LFUCache(int maxSize) {
+        super(16, 0.75f, true);
         this.maxSize = maxSize;
     }
 

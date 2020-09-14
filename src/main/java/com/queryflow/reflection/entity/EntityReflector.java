@@ -7,7 +7,11 @@ import com.queryflow.reflection.invoker.FieldInvoker;
 import com.queryflow.utils.Utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * 反射获取实体类信息
@@ -21,6 +25,7 @@ public class EntityReflector extends FieldReflector {
     private boolean isNormalBean = false;
 
     private EntityField idField;
+    private Map<String, FieldInvoker> columns;
 
     public EntityReflector(Class<?> clazz) {
         this(clazz, true);
@@ -29,6 +34,25 @@ public class EntityReflector extends FieldReflector {
     public EntityReflector(Class<?> clazz, boolean skipFinalField) {
         super(clazz, skipFinalField);
         parseTableName(clazz);
+    }
+
+    @Override
+    protected void initFieldInvokers() {
+        Field[] fields = type.getDeclaredFields();
+        if(fields.length > 0) {
+            fieldInvokers = new HashMap<>(fields.length);
+            columns = new HashMap<>(fields.length);
+            for (Field field : fields) {
+                if (!skipFinalField && !Modifier.isFinal(field.getModifiers())) {
+                    EntityField invoker = (EntityField) createFieldInvoker(field);
+                    fieldInvokers.put(field.getName(), invoker);
+                    columns.put(invoker.getColumnName(), invoker);
+                }
+            }
+        } else {
+            fieldInvokers = Collections.emptyMap();
+            columns = Collections.emptyMap();
+        }
     }
 
     @Override
@@ -53,6 +77,10 @@ public class EntityReflector extends FieldReflector {
 
     public EntityField getField(String name) {
         return fieldInvokers == null ? null : (EntityField) fieldInvokers.get(name);
+    }
+
+    public EntityField getFieldByColumnName(String columnName) {
+        return (EntityField) columns.get(columnName);
     }
 
     public EntityField getIdField() {

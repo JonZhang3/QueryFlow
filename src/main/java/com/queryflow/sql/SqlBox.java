@@ -7,13 +7,15 @@ import com.queryflow.reflection.entity.EntityReflector;
 import com.queryflow.reflection.ReflectionUtil;
 import com.queryflow.reflection.invoker.FieldInvoker;
 import com.queryflow.utils.Assert;
+import com.queryflow.utils.Utils;
 
 import java.io.Serializable;
 import java.util.Iterator;
 
 public final class SqlBox {
 
-    private SqlBox() {}
+    private SqlBox() {
+    }
 
     public static int insert(Object entity) {
         return insert(entity, "");
@@ -55,6 +57,73 @@ public final class SqlBox {
 
     public static Update update(String table) {
         return new Update(table);
+    }
+
+    public static Where<Update> update(Object entity, String... columns) {
+        return update(entity, false, columns);
+    }
+
+    /**
+     * 更新表，可以指定要更新的列
+     *
+     * @param entity  包含更新内容的实体类，需要使用{@code @Table} 注解
+     * @param ignoreNull 是否忽略为 null 的字段
+     * @param columns 要更新的列名（tips：这里是列名而不是字段名）
+     * @return 在之后编码更新的条件
+     */
+    public static Where<Update> update(Object entity, boolean ignoreNull, String... columns) {
+        if (entity != null) {
+            if (columns == null) {
+                columns = new String[0];
+            }
+            EntityReflector reflector = ReflectionUtil.forEntityClass(entity.getClass());
+            if (reflector.isNormalBean()) {
+                throw new QueryFlowException("the bean is not a table entity: " + entity.getClass().getName());
+            }
+            EntityField field = null;
+            Update update = new Update(reflector.getTableName());
+            if (columns.length == 0) {
+                Iterator<FieldInvoker> iterator = reflector.fieldIterator();
+                while (iterator.hasNext()) {
+                    field = (EntityField) iterator.next();
+                    updateSet(entity, field, update, ignoreNull);
+                }
+            } else {
+                for (String column : columns) {
+                    if (Utils.isNotEmpty(column)) {
+                        field = reflector.getFieldByColumnName(column);
+                    }
+                    if (field == null) {
+                        throw new QueryFlowException("unknow column name [" + column + "]");
+                    }
+                    updateSet(entity, field, update, ignoreNull);
+                }
+            }
+            return update;
+        }
+        throw new QueryFlowException("the entity is null.");
+    }
+
+    private static void updateSet(Object entity, EntityField field, Update update, boolean ignoreNull) {
+        Object value;
+        if (field.isIdField()) {
+            value = field.getValue(entity);
+            if(!ignoreNull && field.isZeroValue(entity)) {
+                value = KeyGenerateUtil.generateId(field.getKeyGeneratorClass());
+            }
+            if (value != null) {
+                update.set(field.getColumnName(), value);
+            }
+        } else if (field.exists()) {
+            value = field.getValue(entity);
+            if(ignoreNull) {
+                if(value != null) {
+                    update.set(field.getColumnName(), value);
+                }
+            } else {
+                update.set(field.getColumnName(), value);
+            }
+        }
     }
 
     public static Delete delete(String table) {

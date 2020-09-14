@@ -16,9 +16,9 @@ import java.sql.SQLException;
  * @author Jon
  * @since 1.0.0
  */
-public class TransactionManager {
+public class TransactionConnectionManager {
 
-    private static final Log log = LogFactory.getLog(TransactionManager.class);
+    private static final Log log = LogFactory.getLog(TransactionConnectionManager.class);
 
     private static final int STATUS_INIT = 0;
     private static final int STATUS_OPEN = 1;
@@ -28,7 +28,7 @@ public class TransactionManager {
     private int status;
     protected final Connection connection;
 
-    TransactionManager(Connection connection) {
+    TransactionConnectionManager(Connection connection) {
         Assert.notNull(connection);
 
         status = STATUS_INIT;
@@ -49,10 +49,6 @@ public class TransactionManager {
 
     boolean isRollback() {
         return status == STATUS_ROLLBACK;
-    }
-
-    boolean isCompleted() {
-        return status == STATUS_COMMIT || status == STATUS_ROLLBACK;
     }
 
     boolean isClosed() {
@@ -87,21 +83,14 @@ public class TransactionManager {
             log.debug("the connection has been closed");
             return;
         }
-        if (isOpen()) {
-            try {
-                connection.commit();
-                connection.close();
-            } catch (SQLException e) {
-                throw new QueryFlowException(e);
-            }
-        } else {
+        if (!isOpen()) {// 处于非事务中
             JdbcUtil.close(connection);
         }
     }
 
     void commit() {
         if (isClosed()) {
-            log.debug("the connection has been closed");
+            log.warn("the connection has been closed");
             return;
         }
 
@@ -118,7 +107,7 @@ public class TransactionManager {
 
     void rollback() {
         if (isClosed()) {
-            log.debug("the connection has been closed");
+            log.warn("the connection has been closed");
             return;
         }
         if (isOpen()) {

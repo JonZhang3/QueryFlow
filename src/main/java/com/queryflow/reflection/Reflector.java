@@ -46,7 +46,7 @@ public class Reflector {
     // 初始化成员变量（包括静态、常量）
     protected void initFieldInvokers() {
         Field[] fields = type.getDeclaredFields();
-        if (fields != null && fields.length > 0) {
+        if (fields.length > 0) {
             fieldInvokers = new HashMap<>(fields.length);
             for (Field field : fields) {
                 if (!skipFinalField && !Modifier.isFinal(field.getModifiers())) {

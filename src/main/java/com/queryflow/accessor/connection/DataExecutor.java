@@ -31,7 +31,7 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
 
     private static final Log log = LogFactory.getLog(ConnectionManager.class);
 
-    private final ThreadLocal<TransactionManager> CONN_CONTAINER = new ThreadLocal<>();
+    private final ThreadLocal<TransactionConnectionManager> CONN_CONTAINER = new ThreadLocal<>();
 
     private final DataSource dataSource;
     private final SqlRunner runner;
@@ -60,7 +60,7 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
         return getTransactionManager().getConnection();
     }
 
-    private TransactionManager getTransactionManager() {
+    private TransactionConnectionManager getTransactionManager() {
         return getTransactionManager(true);
     }
 
@@ -71,17 +71,17 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
      *               设置为 {@code true}
      * @return 数据库链接
      */
-    private TransactionManager getTransactionManager(boolean create) {
-        TransactionManager transactionManager = CONN_CONTAINER.get();
+    private TransactionConnectionManager getTransactionManager(boolean create) {
+        TransactionConnectionManager transactionConnectionManager = CONN_CONTAINER.get();
         try {
-            if (create && (transactionManager == null || transactionManager.isClosed())) {
-                transactionManager = new TransactionManager(getDataSource().getConnection());
-                CONN_CONTAINER.set(transactionManager);
+            if (create && (transactionConnectionManager == null || transactionConnectionManager.isClosed())) {
+                transactionConnectionManager = new TransactionConnectionManager(getDataSource().getConnection());
+                CONN_CONTAINER.set(transactionConnectionManager);
             }
         } catch (SQLException e) {
             throw new QueryFlowException(e);
         }
-        return transactionManager;
+        return transactionConnectionManager;
     }
 
     /**
@@ -89,9 +89,13 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
      */
     @Override
     public void close() {
-        TransactionManager transactionManager = getTransactionManager(false);
-        if (transactionManager != null) {
-            transactionManager.close();
+        TransactionConnectionManager transactionConnectionManager = getTransactionManager(false);
+        if (transactionConnectionManager != null) {
+            try {
+                transactionConnectionManager.close();
+            } finally {
+                CONN_CONTAINER.remove();
+            }
         }
     }
 
