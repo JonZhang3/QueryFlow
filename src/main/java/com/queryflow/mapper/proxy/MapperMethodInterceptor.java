@@ -1,5 +1,6 @@
 package com.queryflow.mapper.proxy;
 
+import com.queryflow.common.QueryFlowException;
 import com.queryflow.mapper.MapperMethod;
 import com.queryflow.mapper.MapperMethodBuilder;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -17,7 +18,7 @@ public class MapperMethodInterceptor implements MethodInterceptor {
         } else {
             MapperMethod mapperMethod = MapperMethodBuilder.getMapperMethod(method);
             if (mapperMethod == null) {
-                throw new NullPointerException("the method is not a mapper method: " + method.getName());
+                throw new QueryFlowException("the method is not a mapper method: " + method.getName());
             }
             return mapperMethod.execute(obj, args);
         }

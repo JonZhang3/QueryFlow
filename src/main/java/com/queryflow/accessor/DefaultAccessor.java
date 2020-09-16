@@ -152,10 +152,11 @@ public class DefaultAccessor implements Accessor {
             throw new QueryFlowException("not support the database");
         }
         int total = count(sql, values, false);
-        if (limit <= 0) {
-            limit = GlobalConfig.getDefaultPageLimit();
+        int defaultLimit = limit;
+        if (defaultLimit <= 0) {
+            defaultLimit = GlobalConfig.getDefaultPageLimit();
         }
-        Pager<T> pager = new Pager<>(total, page, limit, null);
+        Pager<T> pager = new Pager<>(total, page, defaultLimit, null);
         String pageSql = process.sqlProcess(sql, pager.getStart(), limit);
         List records;
         SelectStatement query = createQuery(pageSql).bindList(values);
@@ -188,10 +189,11 @@ public class DefaultAccessor implements Accessor {
             throw new QueryFlowException("not support the database");
         }
         int total = count(sql, values, false);
-        if (limit <= 0) {
-            limit = GlobalConfig.getDefaultPageLimit();
+        int defaultLimit = limit;
+        if (defaultLimit <= 0) {
+            defaultLimit = GlobalConfig.getDefaultPageLimit();
         }
-        Pager<T> pager = new Pager<>(total, page, limit, null);
+        Pager<T> pager = new Pager<>(total, page, defaultLimit, null);
         String pageSql = process.sqlProcess(sql, pager.getStart(), limit);
         SelectStatement statement = createQuery(pageSql).bindList(values);
         List<T> result = statement.result(handler);

@@ -88,7 +88,7 @@ public class TransactionConnectionManager {
         }
     }
 
-    void commit() {
+    protected void commit() {
         if (isClosed()) {
             log.warn("the connection has been closed");
             return;
@@ -105,7 +105,7 @@ public class TransactionConnectionManager {
         }
     }
 
-    void rollback() {
+    protected void rollback() {
         if (isClosed()) {
             log.warn("the connection has been closed");
             return;

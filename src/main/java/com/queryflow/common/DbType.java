@@ -16,7 +16,7 @@ public enum DbType {
     MARIADB("mariadb"),
     OTHER("other");
 
-    private String value;
+    private final String value;
 
     DbType(String value) {
         this.value = value;

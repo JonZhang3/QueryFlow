@@ -20,7 +20,6 @@ public final class KeyGenerateUtil {
         registerKeyGenerator(SnowflakeKeyGenerator.class);
         registerKeyGenerator(AutoIncrementKeyGenerator.class);
         registerKeyGenerator(UUIDKeyGenerator.class);
-        registerKeyGenerator(SimpleKeyGenerator.class);
     }
 
     public static void registerKeyGenerator(Class<? extends KeyGenerator> clazz) {

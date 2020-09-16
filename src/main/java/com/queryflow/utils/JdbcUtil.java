@@ -274,10 +274,8 @@ public final class JdbcUtil {
             } else {
                 value = rs.getDate(index);
             }
-        } else if (value instanceof Date) {
-            if ("java.sql.Timestamp".equals(rs.getMetaData().getColumnClassName(index))) {
-                value = rs.getTimestamp(index);
-            }
+        } else if (value instanceof Date && "java.sql.Timestamp".equals(rs.getMetaData().getColumnClassName(index))) {
+            value = rs.getTimestamp(index);
         }
         return value;
     }

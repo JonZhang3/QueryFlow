@@ -29,25 +29,8 @@ public abstract class AbstractSqlRunner implements SqlRunner {
     }
 
     protected void fillStatement(PreparedStatement statement, List<Object> params) throws SQLException {
-        ParameterMetaData metaData = null;
         int paramsCount = params == null ? 0 : params.size();
-        if (canUsePmd) {
-            try {
-                metaData = statement.getParameterMetaData();
-                if (metaData != null) {
-                    int stmtCount = metaData.getParameterCount();
-                    if (stmtCount != paramsCount) {
-                        throw new SQLException("Wrong number of parameters: expected "
-                            + stmtCount + ", was given " + paramsCount);
-                    }
-                } else {
-                    canUsePmd = false;
-                }
-            } catch (SQLFeatureNotSupportedException e) {
-                canUsePmd = false;
-            }
-        }
-
+        ParameterMetaData metaData = getParameterMetaData(statement, paramsCount);
         if (paramsCount == 0) {
             return;
         }
@@ -76,6 +59,27 @@ public abstract class AbstractSqlRunner implements SqlRunner {
                 statement.setNull(i + 1, sqlType);
             }
         }
+    }
+
+    private ParameterMetaData getParameterMetaData(PreparedStatement statement, int paramsCount) throws SQLException {
+        ParameterMetaData metaData = null;
+        if (canUsePmd) {
+            try {
+                metaData = statement.getParameterMetaData();
+                if (metaData != null) {
+                    int stmtCount = metaData.getParameterCount();
+                    if (stmtCount != paramsCount) {
+                        throw new SQLException("Wrong number of parameters: expected "
+                            + stmtCount + ", was given " + paramsCount);
+                    }
+                } else {
+                    canUsePmd = false;
+                }
+            } catch (SQLFeatureNotSupportedException e) {
+                canUsePmd = false;
+            }
+        }
+        return metaData;
     }
 
     protected String buildErrorMessage(SQLException e, String sql, List<Object> params) {

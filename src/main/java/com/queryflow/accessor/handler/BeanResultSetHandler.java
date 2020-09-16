@@ -28,10 +28,14 @@ public class BeanResultSetHandler<T> implements ResultSetHandler {
     private static final LFUCache<Class<?>, BeanResultSetHandler>
         BEAN_HANDLER_CACHE = new LFUCache<>(20);
 
+    private final Class<T> beanType;
+    private final boolean isCommonClass;
+    private Map<String, FieldInvoker> invokers;
+
     @SuppressWarnings("unchecked")
     public static <R> BeanResultSetHandler<R> newBeanHandler(Class<R> requiredType) {
         if (requiredType == null) {
-            throw new NullPointerException("the requiredType must not be null");
+            throw new IllegalArgumentException("the requiredType must not be null");
         }
         // 如果是基本数据类型或其包装类型，或 String 类型，则直接创建 handler
         if (Utils.isPrimitiveOrWrapper(requiredType)
@@ -47,10 +51,6 @@ public class BeanResultSetHandler<T> implements ResultSetHandler {
         }
         return handler;
     }
-
-    private final Class<T> beanType;
-    private final boolean isCommonClass;
-    private Map<String, FieldInvoker> invokers;
 
     private BeanResultSetHandler(Class<T> type) {
         this.beanType = type;
@@ -94,7 +94,7 @@ public class BeanResultSetHandler<T> implements ResultSetHandler {
     }
 
     @SuppressWarnings("unchecked")
-    T handle(ResultSet rs, boolean next) throws SQLException {
+    public T handle(ResultSet rs, boolean next) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
         int colCount = metaData.getColumnCount();
         if (colCount == 0) {

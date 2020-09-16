@@ -1,6 +1,7 @@
 package com.queryflow.page;
 
 import com.queryflow.common.DbType;
+import com.queryflow.common.QueryFlowException;
 import com.queryflow.utils.Utils;
 
 import java.util.Map;
@@ -29,7 +30,7 @@ public final class SimplePageSqlProcessSelector implements PageSqlProcessSelecto
                 if (process == null) {
                     Class<? extends PageSqlMatchProcess> processClass = processClasses.get(dbType);
                     if (processClass == null) {
-                        throw new RuntimeException(String.format(
+                        throw new QueryFlowException(String.format(
                             "根据数据库类型:%s,获取不到相应的PageSqlMatchProcess分页处理器", dbType));
                     } else {
                         process = Utils.instantiate(processClass);

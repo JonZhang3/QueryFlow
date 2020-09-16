@@ -24,7 +24,7 @@ class AccessorManager implements AccessorFactory {
     }
 
     private static class InstanceHolder {
-        static final AccessorManager INSTANCE = new AccessorManager();
+        private static final AccessorManager INSTANCE = new AccessorManager();
     }
 
     public static AccessorManager manager() {
@@ -91,7 +91,7 @@ class AccessorManager implements AccessorFactory {
         return accessors.containsKey(tag);
     }
 
-    static void buildAccessor(DatabaseConfig config) {
+    protected static void buildAccessor(DatabaseConfig config) {
         String tag = config.getTag();
         if (Utils.isEmpty(tag)) {
             tag = AccessorFactory.DEFAULT_TAG;
@@ -100,7 +100,7 @@ class AccessorManager implements AccessorFactory {
         manager.addAccessor(tag, createAccessor(createDatasource(config)));
     }
 
-    static void buildAccessor(String tag, DataSource dataSource) {
+    protected static void buildAccessor(String tag, DataSource dataSource) {
         AccessorManager manager = AccessorManager.manager();
         if (Utils.isEmpty(tag)) {
             tag = AccessorFactory.DEFAULT_TAG;

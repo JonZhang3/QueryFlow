@@ -6,7 +6,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class BaseStatement<T extends BaseStatement> extends Statement<T> {
+@SuppressWarnings("unchecked")
+abstract class BaseStatement<T extends BaseStatement> extends Statement<T> {
 
     protected List<Object> params = new LinkedList<>();
     protected String sql;

@@ -30,22 +30,22 @@ public class KeyGenerateUtilTest {
         assertEquals("test.NEXTVAL", KeyGenerateUtil.generateId(OracleSequenceKeyGenerator.class));
     }
 
-    @Test
-    public void testSimpleKeyGenerator() {
-        Set<Object> sets = new LinkedHashSet<>();
-        long start = System.currentTimeMillis();
-        for(int i = 0; i < 100; i++) {
-            sets.add(KeyGenerateUtil.generateId(SimpleKeyGenerator.class));
-        }
-        System.out.println(sets.size());
-        System.out.println((System.currentTimeMillis() - start) + "ms");
-        sets.clear();
-        start = System.currentTimeMillis();
-        for(int i = 0; i < 100; i++) {
-            sets.add(KeyGenerateUtil.generateId(SnowflakeKeyGenerator.class));
-        }
-        System.out.println(sets.size());
-        System.out.println((System.currentTimeMillis() - start) + "ms");
-    }
+//    @Test
+//    public void testSimpleKeyGenerator() {
+//        Set<Object> sets = new LinkedHashSet<>();
+//        long start = System.currentTimeMillis();
+//        for(int i = 0; i < 100; i++) {
+//            sets.add(KeyGenerateUtil.generateId(SimpleKeyGenerator.class));
+//        }
+//        System.out.println(sets.size());
+//        System.out.println((System.currentTimeMillis() - start) + "ms");
+//        sets.clear();
+//        start = System.currentTimeMillis();
+//        for(int i = 0; i < 100; i++) {
+//            sets.add(KeyGenerateUtil.generateId(SnowflakeKeyGenerator.class));
+//        }
+//        System.out.println(sets.size());
+//        System.out.println((System.currentTimeMillis() - start) + "ms");
+//    }
 
 }

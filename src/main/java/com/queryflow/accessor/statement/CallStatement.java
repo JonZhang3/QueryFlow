@@ -43,6 +43,7 @@ public class CallStatement extends SelectBaseStatement<CallStatement> {
         return parameters;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T one(Class<T> type) {
         internalExecute();
         return (T) executor.call(sql, params, interceptors, BeanResultSetHandler.newBeanHandler(type));
