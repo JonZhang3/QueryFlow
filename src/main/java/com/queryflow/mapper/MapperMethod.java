@@ -8,6 +8,11 @@ import com.queryflow.mapper.executor.OneResultSelectMethodExecutor;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Mapper method Bean
+ *
+ * @author jon
+ */
 public class MapperMethod {
 
     private Class<?> returnClass;
@@ -15,8 +20,8 @@ public class MapperMethod {
     private String dataSourceTag;
     private String preparedSql;
     private MapperMethodExecutor executor;
-    private SqlType sqlType;
-    private List<SqlValue> sqlValues = new LinkedList<>();
+    private final SqlType sqlType;
+    private final List<SqlValue> sqlValues = new LinkedList<>();
 
     public MapperMethod(SqlType sqlType) {
         this.sqlType = sqlType;

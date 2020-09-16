@@ -40,8 +40,8 @@ public class MapperMethodBuilder {
         return mapperMethod;
     }
 
-    private Method method;
-    private String methodDesc;
+    private final Method method;
+    private final String methodDesc;
     private MapperMethod.SqlType sqlType;
 
     public MapperMethodBuilder(Method method) {

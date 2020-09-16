@@ -9,6 +9,7 @@ import com.queryflow.common.ResultSetConcurType;
 
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public abstract class SelectBaseStatement<T extends SelectBaseStatement> extends BaseStatement<T> {
 
     SelectBaseStatement(String sql, ConnectionExecutor executor) {
@@ -37,6 +38,10 @@ public abstract class SelectBaseStatement<T extends SelectBaseStatement> extends
 
     public T setMaxRows(int rows) {
         interceptors.registerInterceptor(StatementInterceptors.maxRows(rows));
+        return (T) this;
+    }
+
+    public T fillDicName() {
         return (T) this;
     }
 

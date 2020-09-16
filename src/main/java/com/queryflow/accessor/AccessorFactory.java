@@ -15,15 +15,15 @@ public interface AccessorFactory {
     boolean containTag(String tag);
 
     static Accessor accessor() {
-        return AccessorManager.manager().getAccessor();
+        return AccessorManager.accessor();
     }
 
     static Accessor accessor(int index) {
-        return AccessorManager.manager().getAccessor(index);
+        return AccessorManager.accessor(index);
     }
 
     static Accessor accessor(String tag) {
-        return AccessorManager.manager().getAccessor(tag);
+        return AccessorManager.accessor(tag);
     }
 
 }

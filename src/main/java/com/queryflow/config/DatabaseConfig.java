@@ -1,5 +1,6 @@
 package com.queryflow.config;
 
+import java.util.List;
 import java.util.Properties;
 
 import com.alibaba.druid.pool.DruidAbstractDataSource;
@@ -31,6 +32,10 @@ public class DatabaseConfig {
     private int maxPoolPreparedStatementPerConnectionSize = 10;// 指定每个连接上 PSCache 的大小
     private String filters;// 配置拦截器
     private Properties connectProperties;
+
+    private boolean cacheDicTables;// 是否缓存字典表
+    private String dicTablePrefix = "dic_";// 指定要缓存的字典表的前缀，默认dic_
+    private List<String> dicTables;// 指定要缓存的字典表名
 
     public DatabaseConfig() {
     }
@@ -191,5 +196,29 @@ public class DatabaseConfig {
 
     public void setTestWhileIdle(boolean testWhileIdle) {
         this.testWhileIdle = testWhileIdle;
+    }
+
+    public boolean isCacheDicTables() {
+        return cacheDicTables;
+    }
+
+    public void setCacheDicTables(boolean cacheDicTables) {
+        this.cacheDicTables = cacheDicTables;
+    }
+
+    public String getDicTablePrefix() {
+        return dicTablePrefix;
+    }
+
+    public void setDicTablePrefix(String dicTablePrefix) {
+        this.dicTablePrefix = dicTablePrefix;
+    }
+
+    public List<String> getDicTables() {
+        return dicTables;
+    }
+
+    public void setDicTables(List<String> dicTables) {
+        this.dicTables = dicTables;
     }
 }

@@ -12,10 +12,10 @@ import java.util.List;
  */
 public class CopiedIterator<V> implements Iterator<V> {
 
-    private List<V> replicas = new LinkedList<>();
-    private Iterator<V> iterator;
+    private final Iterator<V> iterator;
 
     public CopiedIterator(Iterator<V> iterator) {
+        List<V> replicas = new LinkedList<>();
         while (iterator.hasNext()) {
             replicas.add(iterator.next());
         }
