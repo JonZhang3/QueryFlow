@@ -1,4 +1,4 @@
-package com.queryflow.page;
+package com.queryflow.page.impl;
 
 import com.queryflow.common.DbType;
 

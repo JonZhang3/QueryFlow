@@ -1,7 +1,7 @@
 package com.queryflow.config;
 
-import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import com.alibaba.druid.pool.DruidAbstractDataSource;
 
@@ -35,7 +35,7 @@ public class DatabaseConfig {
 
     private boolean cacheDicTables;// 是否缓存字典表
     private String dicTablePrefix = "dic_";// 指定要缓存的字典表的前缀，默认dic_
-    private List<String> dicTables;// 指定要缓存的字典表名
+    private Set<String> dicTables;// 指定要缓存的字典表名
 
     public DatabaseConfig() {
     }
@@ -214,11 +214,11 @@ public class DatabaseConfig {
         this.dicTablePrefix = dicTablePrefix;
     }
 
-    public List<String> getDicTables() {
+    public Set<String> getDicTables() {
         return dicTables;
     }
 
-    public void setDicTables(List<String> dicTables) {
+    public void setDicTables(Set<String> dicTables) {
         this.dicTables = dicTables;
     }
 }

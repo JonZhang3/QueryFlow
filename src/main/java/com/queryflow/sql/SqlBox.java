@@ -25,7 +25,7 @@ public final class SqlBox {
         if (entity != null) {
             EntityReflector reflector = ReflectionUtil.forEntityClass(entity.getClass());
             if (reflector.isNormalBean()) {
-                throw new QueryFlowException("the bean is not a table entity: " + entity.getClass().getName());
+                throwNotTableBeanException(entity.getClass().getName());
             }
             Iterator<FieldInvoker> iterator = reflector.fieldIterator();
             EntityField field;
@@ -78,7 +78,7 @@ public final class SqlBox {
             }
             EntityReflector reflector = ReflectionUtil.forEntityClass(entity.getClass());
             if (reflector.isNormalBean()) {
-                throw new QueryFlowException("the bean is not a table entity: " + entity.getClass().getName());
+                throwNotTableBeanException(entity.getClass().getName());
             }
             EntityField field = null;
             Update update = new Update(reflector.getTableName());
@@ -147,7 +147,7 @@ public final class SqlBox {
 
         EntityReflector reflector = ReflectionUtil.forEntityClass(entityClass);
         if (reflector.isNormalBean()) {
-            throw new QueryFlowException("the class is not a table entity: " + entityClass.getName());
+            throwNotTableBeanException(entityClass.getName());
         }
         String table = reflector.getTableName();
         EntityField idField = reflector.getIdField();
@@ -167,7 +167,7 @@ public final class SqlBox {
 
         EntityReflector reflector = ReflectionUtil.forEntityClass(entityClass);
         if (reflector.isNormalBean()) {
-            throw new QueryFlowException("the class is not a table entity: " + entityClass.getName());
+            throwNotTableBeanException(entityClass.getName());
         }
         Iterator<FieldInvoker> iterator = reflector.fieldIterator();
         String[] columns = new String[reflector.fieldSize()];
@@ -197,6 +197,10 @@ public final class SqlBox {
             index++;
         }
         return new Select(columns).from(table);
+    }
+
+    private static void throwNotTableBeanException(String className) {
+        throw new QueryFlowException("the bean is not a table entity: " + className + ". Table entity must use @Table annotation.");
     }
 
 }

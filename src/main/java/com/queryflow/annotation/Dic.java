@@ -4,8 +4,8 @@ import java.lang.annotation.*;
 
 /**
  *
- * code name status
- * 代码 名称  状态1-有效;0-无效
+ * code name status           index
+ * 代码 名称  状态1-有效;0-无效  排序
  *
  */
 @Documented
@@ -13,8 +13,14 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Dic {
 
+    /**
+     * 指定使用到的字典表的表明
+     */
     String table();
 
-    String field();
+    /**
+     * 指定类中代表字典表中名称的字段名
+     */
+    String nameField();
 
 }

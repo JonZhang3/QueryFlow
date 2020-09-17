@@ -1,18 +1,18 @@
-package com.queryflow.page;
+package com.queryflow.page.impl;
 
 import com.queryflow.common.DbType;
 
-public class MysqlPageSqlMatchProcess extends AbstractPageSqlMatchProcess {
+public class H2PageSqlMatchProcess extends AbstractPageSqlMatchProcess {
 
     @Override
     protected String dbType() {
-        return DbType.MYSQL.value();
+        return DbType.H2.value();
     }
 
     @Override
     protected String internalSqlProcess(String sql, int start, int limit) {
         StringBuilder pageSql = new StringBuilder(sql);
-        pageSql.append(" LIMIT ").append(limit).append(" OFFSET ").append(start);
+        pageSql.append(" limit ").append(start).append(", ").append(limit);
         return pageSql.toString();
     }
 

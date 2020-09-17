@@ -1,4 +1,6 @@
-package com.queryflow.page;
+package com.queryflow.page.impl;
+
+import com.queryflow.page.PageSqlMatchProcess;
 
 public abstract class AbstractPageSqlMatchProcess implements PageSqlMatchProcess {
 

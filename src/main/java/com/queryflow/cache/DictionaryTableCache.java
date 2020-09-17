@@ -7,23 +7,30 @@ import java.util.Map;
 
 public final class DictionaryTableCache {
 
-    private static final Map<String, Map<Object, String>> CACHE = new LinkedHashMap<>();
+    private final Map<String, Map<Object, String>> CACHE = new LinkedHashMap<>();
 
-    private DictionaryTableCache() {
+    public DictionaryTableCache() {
     }
 
-    public static void getAll() {
-
+    public Map<String, Map<Object, String>> getAll() {
+        Map<String, Map<Object, String>> result = new LinkedHashMap<>();
+        for (Map.Entry<String, Map<Object, String>> entry : CACHE.entrySet()) {
+            String tableName = entry.getKey();
+            Map<Object, String> codes = entry.getValue();
+            result.put(tableName, codes == null ? null : new LinkedHashMap<>(codes));
+        }
+        return result;
     }
 
-    public static Map<Object, String> getTable(String tableName) {
+    public Map<Object, String> getTable(String tableName) {
         if(Utils.isEmpty(tableName)) {
             return null;
         }
-        return CACHE.get(tableName);
+        Map<Object, String> codes = CACHE.get(tableName);
+        return codes == null ? null : new LinkedHashMap<>(codes);
     }
 
-    public static String getName(String tableName, Object code) {
+    public String getName(String tableName, Object code) {
         if(Utils.isEmpty(tableName) || code == null) {
             return "";
         }
@@ -38,11 +45,11 @@ public final class DictionaryTableCache {
         return name;
     }
 
-    public static void putTable(String tableName, Map<Object, String> codes) {
+    public void putTable(String tableName, Map<Object, String> codes) {
         if(Utils.isEmpty(tableName) || codes == null) {
             return;
         }
-        CACHE.put(tableName, codes);
+        CACHE.put(tableName, new LinkedHashMap<>(codes));
     }
 
 }

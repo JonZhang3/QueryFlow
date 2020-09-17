@@ -2,6 +2,7 @@ package com.queryflow.page;
 
 import com.queryflow.common.DbType;
 import com.queryflow.common.QueryFlowException;
+import com.queryflow.page.impl.*;
 import com.queryflow.utils.Utils;
 
 import java.util.Map;
@@ -9,8 +10,8 @@ import java.util.HashMap;
 
 public final class SimplePageSqlProcessSelector implements PageSqlProcessSelector {
 
-    private Map<String, PageSqlMatchProcess> processes = new HashMap<>();
-    private Map<String, Class<? extends PageSqlMatchProcess>> processClasses = new HashMap<>();
+    private final Map<String, PageSqlMatchProcess> processes = new HashMap<>();
+    private final Map<String, Class<? extends PageSqlMatchProcess>> processClasses = new HashMap<>();
 
     public SimplePageSqlProcessSelector() {
         processClasses.put(DbType.DERBY.value(), DerbyPageSqlMatchProcess.class);
