@@ -98,16 +98,17 @@ public class BaseSqlRunner extends AbstractSqlRunner {
                                     Interceptors interceptors,
                                     ResultSetHandler<T> handler) throws SQLException {
         check(conn, sql);
-        if (params == null) {
-            params = new ArrayList<>(0);
+        List<List<Object>> localParams = params;
+        if (localParams == null) {
+            localParams = new ArrayList<>(0);
         }
         PreparedStatement ps = null;
         ResultSet rs = null;
         T result = null;
         try {
             ps = prepareStatement(conn, sql, keyColumnNames, interceptors, true);
-            for (int i = 0, len = params.size(); i < len; i++) {
-                this.fillStatement(ps, params.get(i));
+            for (int i = 0, len = localParams.size(); i < len; i++) {
+                this.fillStatement(ps, localParams.get(i));
                 ps.addBatch();
             }
 
@@ -133,15 +134,16 @@ public class BaseSqlRunner extends AbstractSqlRunner {
     public int[] batch(Connection conn, String sql, List<List<Object>> params, Interceptors interceptors)
         throws SQLException {
         check(conn, sql);
-        if (params == null) {
-            params = new ArrayList<>(0);
+        List<List<Object>> localParams = params;
+        if (localParams == null) {
+            localParams = new ArrayList<>(0);
         }
         PreparedStatement ps = null;
         int[] rows = new int[0];
         try {
             ps = this.prepareStatement(conn, sql, null, interceptors, false);
-            for (int i = 0, len = params.size(); i < len; i++) {
-                this.fillStatement(ps, params.get(i));
+            for (int i = 0, len = localParams.size(); i < len; i++) {
+                this.fillStatement(ps, localParams.get(i));
                 ps.addBatch();
             }
             if (!InterceptorHelper.before(interceptors, ps)) {
