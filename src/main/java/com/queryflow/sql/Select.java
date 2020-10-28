@@ -8,8 +8,8 @@ import java.util.List;
 
 public class Select extends Where<Select> {
 
-    private StringBuilder orderBy = new StringBuilder();
-    private StringBuilder groupBy = new StringBuilder();
+    private final StringBuilder orderBy = new StringBuilder();
+    private final StringBuilder groupBy = new StringBuilder();
     private String havingCondition;
 
     public Select(String... columns) {
@@ -28,9 +28,50 @@ public class Select extends Where<Select> {
         }
     }
 
-    public Select from(String tables) {
-        appender.append(" FROM ").append(tables);
+    public Select from(String... tables) {
+        if (tables == null || tables.length == 0) {
+            throw new IllegalArgumentException("must provide a table name");
+        }
+        appender.append(" FROM ");
+        for (int i = 0, len = tables.length; i < len; i++) {
+            appender.append(tables[i]);
+            if (i < len - 1) {
+                appender.append(", ");
+            }
+        }
         return this;
+    }
+
+    public Select from(Select select, String alias) {
+        if (Utils.isBlank(alias)) {
+            throw new IllegalArgumentException("must provide an alias");
+        }
+        if (select != null && select != this) {
+            appender.append(" FROM (").append(select.buildSql()).append(") ")
+                .append(alias).append(" ");
+            this.values.addAll(select.getValues());
+        }
+        return this;
+    }
+
+    public Join join() {
+        return new Join(this, Join.JoinType.JOIN);
+    }
+
+    public void innerJoin() {
+
+    }
+
+    public void leftJoin() {
+
+    }
+
+    public void rightJoin() {
+
+    }
+
+    public void fullJoin() {
+
     }
 
     public Select groupBy(String column) {
@@ -119,6 +160,13 @@ public class Select extends Where<Select> {
     public <T> List<T> queryList(String dataSourceTag, Class<T> requiredType) {
         Accessor accessor = AccessorFactory.accessor(dataSourceTag);
         return accessor.query(buildSql(), values).list(requiredType);
+    }
+
+    public static void main(String[] args) {
+        Select select = new Select().from("sys_user").where().eq("username", "admin");
+        Select wrapperSelect = new Select().from(select, "a").where().eq("username", "admin");
+        System.out.println(wrapperSelect.buildSql());
+        System.out.println(wrapperSelect.values);
     }
 
 }

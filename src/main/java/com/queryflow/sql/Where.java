@@ -51,6 +51,11 @@ public abstract class Where<T> {
         return (T) this;
     }
 
+    public T or(String condition) {
+        appender.append(OR).append(condition);
+        return (T) this;
+    }
+
     public T orNew() {
         appender.append(OR_NEW);
         return (T) this;
@@ -61,8 +66,22 @@ public abstract class Where<T> {
         return (T) this;
     }
 
+    public T isNull(boolean condition, String column) {
+        if (condition) {
+            isNull(column);
+        }
+        return (T) this;
+    }
+
     public T isNotNull(String column) {
         appender.append(column).append(" IS NOT NULL ");
+        return (T) this;
+    }
+
+    public T isNotNull(boolean condition, String column) {
+        if (condition) {
+            isNotNull(column);
+        }
         return (T) this;
     }
 
@@ -72,9 +91,23 @@ public abstract class Where<T> {
         return (T) this;
     }
 
+    public T like(boolean condition, String column, Object value) {
+        if (condition) {
+            like(column, value);
+        }
+        return (T) this;
+    }
+
     public T notLike(String column, Object value) {
         appender.append(column).append(" NOT LIKE ?");
         values.add(value);
+        return (T) this;
+    }
+
+    public T notLike(boolean condition, String column, Object value) {
+        if (condition) {
+            notLike(column, value);
+        }
         return (T) this;
     }
 
@@ -88,6 +121,13 @@ public abstract class Where<T> {
         return (T) this;
     }
 
+    public T in(boolean condition, String column, Object... values) {
+        if (condition) {
+            in(column, values);
+        }
+        return (T) this;
+    }
+
     public T notIn(String column, Object... values) {
         appender.append(column).append(" NOT IN (");
         if (values == null || values.length == 0) {
@@ -95,6 +135,13 @@ public abstract class Where<T> {
         }
         addValueAndMark(values);
         appender.append(") ");
+        return (T) this;
+    }
+
+    public T notIn(boolean condition, String column, Object... values) {
+        if (condition) {
+            notIn(column, values);
+        }
         return (T) this;
     }
 
@@ -116,9 +163,23 @@ public abstract class Where<T> {
         return (T) this;
     }
 
+    public T gt(boolean condition, String column, Object value) {
+        if (condition) {
+            gt(column, value);
+        }
+        return (T) this;
+    }
+
     public T ge(String column, Object value) {
         appender.append(column).append(" >= ");
         values.add(value);
+        return (T) this;
+    }
+
+    public T ge(boolean condition, String column, Object value) {
+        if (condition) {
+            ge(column, value);
+        }
         return (T) this;
     }
 
@@ -128,9 +189,23 @@ public abstract class Where<T> {
         return (T) this;
     }
 
+    public T lt(boolean condition, String column, Object value) {
+        if (condition) {
+            lt(column, value);
+        }
+        return (T) this;
+    }
+
     public T le(String column, Object value) {
         appender.append(column).append(" <= ?");
         values.add(value);
+        return (T) this;
+    }
+
+    public T le(boolean condition, String column, Object value) {
+        if (condition) {
+            le(column, value);
+        }
         return (T) this;
     }
 
@@ -141,10 +216,24 @@ public abstract class Where<T> {
         return (T) this;
     }
 
+    public T between(boolean condition, String column, Object smallValue, Object bigValue) {
+        if (condition) {
+            between(column, smallValue, bigValue);
+        }
+        return (T) this;
+    }
+
     public T notBetween(String column, Object smallValue, Object bigValue) {
         appender.append(column).append(" NOT BETWEEN ? AND ?");
         values.add(smallValue);
         values.add(bigValue);
+        return (T) this;
+    }
+
+    public T notBetween(boolean condition, String column, Object smallValue, Object bigValue) {
+        if (condition) {
+            notBetween(column, smallValue, bigValue);
+        }
         return (T) this;
     }
 
@@ -154,9 +243,23 @@ public abstract class Where<T> {
         return (T) this;
     }
 
+    public T eq(boolean condition, String column, Object value) {
+        if (condition) {
+            eq(column, value);
+        }
+        return (T) this;
+    }
+
     public T notEq(String column, Object value) {
         appender.append(column).append(" <> ?");
         this.values.add(value);
+        return (T) this;
+    }
+
+    public T notEq(boolean condition, String column, Object value) {
+        if (condition) {
+            notEq(column, value);
+        }
         return (T) this;
     }
 
