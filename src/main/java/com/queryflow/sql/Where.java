@@ -24,8 +24,8 @@ public abstract class Where<T> {
     }
 
     // a.b = c.b
-    public T where(String condition) {
-        appender.append(" WHERE (").append(condition);
+    public T where(String sentence) {
+        appender.append(" WHERE (").append(sentence);
         hasWhere = true;
         return (T) this;
     }
@@ -36,8 +36,8 @@ public abstract class Where<T> {
     }
 
     // a.b = c.b
-    public T and(String condition) {
-        appender.append(AND).append(condition);
+    public T and(String sentence) {
+        appender.append(AND).append(sentence);
         return (T) this;
     }
 
@@ -51,8 +51,8 @@ public abstract class Where<T> {
         return (T) this;
     }
 
-    public T or(String condition) {
-        appender.append(OR).append(condition);
+    public T or(String sentence) {
+        appender.append(OR).append(sentence);
         return (T) this;
     }
 

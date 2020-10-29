@@ -2,6 +2,7 @@ package com.queryflow.sql;
 
 import com.queryflow.accessor.Accessor;
 import com.queryflow.accessor.AccessorFactory;
+import com.queryflow.utils.Assert;
 import com.queryflow.utils.Utils;
 
 import java.util.List;
@@ -43,35 +44,58 @@ public class Select extends Where<Select> {
     }
 
     public Select from(Select select, String alias) {
+        Assert.notNull(select);
+        Assert.notThis(select, this);
         if (Utils.isBlank(alias)) {
             throw new IllegalArgumentException("must provide an alias");
         }
-        if (select != null && select != this) {
-            appender.append(" FROM (").append(select.buildSql()).append(") ")
-                .append(alias).append(" ");
-            this.values.addAll(select.getValues());
-        }
+        appender.append(" FROM (").append(select.buildSql()).append(") ")
+            .append(alias).append(" ");
+        this.values.addAll(select.getValues());
         return this;
     }
 
-    public Join join() {
-        return new Join(this, Join.JoinType.JOIN);
+    public Join join(String tableName) {
+        return new Join(this, Join.JoinType.JOIN, tableName);
     }
 
-    public void innerJoin() {
-
+    public Join join(Select select, String alias) {
+        return newJoin(select, alias, Join.JoinType.JOIN);
     }
 
-    public void leftJoin() {
-
+    public Join leftJoin(String tableName) {
+        return new Join(this, Join.JoinType.LEFT_JOIN, tableName);
     }
 
-    public void rightJoin() {
-
+    public Join leftJoin(Select select, String alias) {
+        return newJoin(select, alias, Join.JoinType.LEFT_JOIN);
     }
 
-    public void fullJoin() {
+    public Join rightJoin(String tableName) {
+        return new Join(this, Join.JoinType.RIGHT_JOIN, tableName);
+    }
 
+    public Join rightJoin(Select select, String alias) {
+        return newJoin(select, alias, Join.JoinType.RIGHT_JOIN);
+    }
+
+    public Join fullJoin(String tableName) {
+        return new Join(this, Join.JoinType.FULL_JOIN, tableName);
+    }
+
+    public Join fullJoin(Select select, String alias) {
+        return newJoin(select, alias, Join.JoinType.FULL_JOIN);
+    }
+
+    private Join newJoin(Select select, String alias, Join.JoinType joinType) {
+        Assert.notNull(select);
+        Assert.notThis(select, this);
+        if (Utils.isBlank(alias)) {
+            throw new IllegalArgumentException("must provide an alias");
+        }
+        Join join = new Join(this, joinType, "(" + select.buildSql() + ") " + alias);
+        this.values.addAll(select.values);
+        return join;
     }
 
     public Select groupBy(String column) {
@@ -163,10 +187,11 @@ public class Select extends Where<Select> {
     }
 
     public static void main(String[] args) {
-        Select select = new Select().from("sys_user").where().eq("username", "admin");
-        Select wrapperSelect = new Select().from(select, "a").where().eq("username", "admin");
-        System.out.println(wrapperSelect.buildSql());
-        System.out.println(wrapperSelect.values);
+        Select select = new Select().from("sys_user u")
+            .leftJoin("sys_name n").on("u.name", "n.name")
+            .where().eq("username", "admin");
+        System.out.println(select.buildSql());
+        System.out.println(select.values);
     }
 
 }

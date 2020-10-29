@@ -16,7 +16,7 @@ public final class Assert {
 
     public static void notEmpty(String str) {
         if (Utils.isEmpty(str)) {
-            throw new IllegalArgumentException("this string argument must not be null or not empty");
+            throw new IllegalArgumentException("this string argument must not be null or empty");
         }
     }
 
@@ -27,6 +27,12 @@ public final class Assert {
     public static void hasText(String str, String message) {
         if (Utils.isBlank(str)) {
             throw new IllegalArgumentException(message);
+        }
+    }
+
+    public static void notThis(Object src, Object dest) {
+        if(src == dest) {
+            throw new IllegalArgumentException("");
         }
     }
 
