@@ -13,7 +13,7 @@ public final class KeyGenerateUtil {
     private KeyGenerateUtil() {
     }
 
-    private static final Map<Class<? extends KeyGenerator>, KeyGenerator> generators =
+    private static final Map<Class<? extends KeyGenerator<?>>, KeyGenerator<?>> generators =
         new HashMap<>(2);
 
     static {
@@ -22,17 +22,17 @@ public final class KeyGenerateUtil {
         registerKeyGenerator(UUIDKeyGenerator.class);
     }
 
-    public static void registerKeyGenerator(Class<? extends KeyGenerator> clazz) {
+    public static void registerKeyGenerator(Class<? extends KeyGenerator<?>> clazz) {
         Assert.notNull(clazz);
 
         if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) {
             throw new IllegalArgumentException("the key generator must not be interface or abstract class");
         }
-        KeyGenerator keyGenerator = Utils.instantiate(clazz);
+        KeyGenerator<?> keyGenerator = Utils.instantiate(clazz);
         generators.put(clazz, keyGenerator);
     }
 
-    public static KeyGenerator getKeyGenerator(Class<? extends KeyGenerator> clazz) {
+    public static KeyGenerator<?> getKeyGenerator(Class<? extends KeyGenerator<?>> clazz) {
         return generators.get(clazz);
     }
 
@@ -59,7 +59,7 @@ public final class KeyGenerateUtil {
         return generators.size();
     }
 
-    public static boolean containKeyGenerator(Class<? extends KeyGenerator> clazz) {
+    public static boolean containKeyGenerator(Class<? extends KeyGenerator<?>> clazz) {
         return generators.containsKey(clazz);
     }
 

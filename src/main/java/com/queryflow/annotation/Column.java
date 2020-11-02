@@ -1,5 +1,8 @@
 package com.queryflow.annotation;
 
+import com.queryflow.common.ColumnFillStrategy;
+import com.queryflow.common.ColumnFillType;
+import com.queryflow.common.DefaultColumnFillStrategy;
 import com.queryflow.common.DictionaryEnum;
 
 import java.lang.annotation.*;
@@ -36,5 +39,9 @@ public @interface Column {
      * @return DictionaryEnum 实现类的 Class
      */
     Class<? extends DictionaryEnum> dictionaryClass() default DictionaryEnum.class;
+
+    ColumnFillType fillType() default ColumnFillType.NONE;
+
+    Class<? extends ColumnFillStrategy> fillStrategy() default DefaultColumnFillStrategy.class;
 
 }

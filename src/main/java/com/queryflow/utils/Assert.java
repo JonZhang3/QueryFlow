@@ -30,8 +30,8 @@ public final class Assert {
         }
     }
 
-    public static void notThis(Object src, Object dest) {
-        if(src == dest) {
+    public static void notThis(Object src, Object thisObj) {
+        if(src == thisObj) {
             throw new IllegalArgumentException("");
         }
     }

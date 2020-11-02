@@ -1,6 +1,6 @@
 package com.queryflow.entity;
 
-public interface BaseEntity {
+public interface Field {
 
 
 

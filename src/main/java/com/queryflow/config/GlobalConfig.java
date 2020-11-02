@@ -112,7 +112,7 @@ public class GlobalConfig {
      * @param clazz the implementation class of {@code KeyGenerator}, must not null
      * @return GlobalConfig
      */
-    public GlobalConfig registerKeyGenerator(Class<? extends KeyGenerator> clazz) {
+    public GlobalConfig registerKeyGenerator(Class<? extends KeyGenerator<?>> clazz) {
         KeyGenerateUtil.registerKeyGenerator(clazz);
         return this;
     }

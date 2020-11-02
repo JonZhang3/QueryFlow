@@ -41,7 +41,7 @@ public enum DataType {
     NCLOB(Types.NCLOB),// String
     SQLXML(Types.SQLXML);
 
-    private int value;
+    private final int value;
 
     DataType(int value) {
         this.value = value;

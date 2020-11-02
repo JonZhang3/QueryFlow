@@ -1,6 +1,7 @@
 package com.queryflow.sql;
 
 import com.queryflow.common.QueryFlowException;
+import com.queryflow.utils.Assert;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +28,13 @@ public abstract class Where<T> {
     public T where(String sentence) {
         appender.append(" WHERE (").append(sentence);
         hasWhere = true;
+        return (T) this;
+    }
+
+    public T exists(Select select) {
+        Assert.notNull(select);
+        Assert.notThis(select, this);
+        appender.append(" EXISTS (").append(select.buildSql()).append(") ");
         return (T) this;
     }
 

@@ -2,6 +2,8 @@ package com.queryflow.config.parser;
 
 import com.queryflow.common.QueryFlowException;
 import com.queryflow.config.DatabaseConfig;
+import com.queryflow.log.Log;
+import com.queryflow.log.LogFactory;
 import com.queryflow.utils.Utils;
 
 import java.io.File;
@@ -17,6 +19,8 @@ import java.util.Map;
  * @since 1.0.0
  */
 public class ConfigFileFactory {
+
+    private static final Log LOG = LogFactory.getLog(ConfigFileFactory.class);
 
     private static final String DEFAULT_CONFIG_DIR_NAME = "conf";
     private static final String DEFAULT_CONFIG_FILE_YAML = "queryflow.yaml";
@@ -43,20 +47,7 @@ public class ConfigFileFactory {
                 if(url == null) {
                     throw new QueryFlowException("not found the config file, default queryflow.yaml or queryflow.properties");
                 }
-                String filePath = url.getPath();
-                String suffix = filePath.substring(filePath.lastIndexOf("."));
-                ConfigFileParser<Map<String, Object>> fileParser;
-                if(suffix.equals(".yaml") || suffix.equals(".yml")) {
-                    fileParser = new YamlConfigFileParser();
-                } else {
-                    fileParser = new PropertiesConfigFileParser();
-                }
-                ConfigFileRunner runner = new ConfigFileRunner();
-                try {
-                    return runner.run(fileParser.parse(url.openStream()));
-                } catch (IOException e) {
-                    throw new QueryFlowException(e);
-                }
+                configFile = new File(url.getPath());
             }
         } else {
             configFile = new File(path);
@@ -76,6 +67,7 @@ public class ConfigFileFactory {
         } else {
             throw new QueryFlowException("unknown type of file");
         }
+        LOG.info("Loading configuration resource from file:" + configFile.getAbsolutePath());
         ConfigFileRunner runner = new ConfigFileRunner();
         return runner.run(fileParser.parse(configFile));
     }

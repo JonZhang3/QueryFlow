@@ -186,12 +186,4 @@ public class Select extends Where<Select> {
         return accessor.query(buildSql(), values).list(requiredType);
     }
 
-    public static void main(String[] args) {
-        Select select = new Select().from("sys_user u")
-            .leftJoin("sys_name n").on("u.name", "n.name")
-            .where().eq("username", "admin");
-        System.out.println(select.buildSql());
-        System.out.println(select.values);
-    }
-
 }

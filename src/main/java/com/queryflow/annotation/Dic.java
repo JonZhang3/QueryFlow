@@ -4,7 +4,7 @@ import java.lang.annotation.*;
 
 /**
  *
- * code name status           index
+ * code name status           sort
  * 代码 名称  状态1-有效;0-无效  排序
  *
  */
