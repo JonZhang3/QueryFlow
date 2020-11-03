@@ -1,5 +1,6 @@
 package com.queryflow.sql;
 
+import com.queryflow.common.Operation;
 import com.queryflow.common.QueryFlowException;
 import com.queryflow.key.KeyGenerateUtil;
 import com.queryflow.reflection.entity.EntityField;
@@ -42,7 +43,7 @@ public final class SqlBox {
                         insert.column(field.getColumnName(), value);
                     }
                 } else if (field.exists()) {
-                    value = field.getValue(entity);
+                    value = field.getValue(entity, Operation.INSERT);
                     insert.column(field.getColumnName(), value);
                 }
             }
@@ -115,7 +116,7 @@ public final class SqlBox {
                 update.set(field.getColumnName(), value);
             }
         } else if (field.exists()) {
-            value = field.getValue(entity);
+            value = field.getValue(entity, Operation.UPDATE);
             if(ignoreNull) {
                 if(value != null) {
                     update.set(field.getColumnName(), value);

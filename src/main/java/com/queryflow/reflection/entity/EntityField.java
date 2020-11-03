@@ -1,10 +1,13 @@
 package com.queryflow.reflection.entity;
 
 import com.queryflow.common.ColumnFillStrategy;
+import com.queryflow.common.Common;
+import com.queryflow.common.DefaultColumnFillStrategy;
 import com.queryflow.common.FillType;
 import com.queryflow.common.DictionaryEnum;
 import com.queryflow.annotation.Column;
 import com.queryflow.annotation.Id;
+import com.queryflow.common.Operation;
 import com.queryflow.key.KeyGenerator;
 import com.queryflow.reflection.invoker.Property;
 import com.queryflow.utils.Utils;
@@ -22,8 +25,9 @@ public class EntityField extends Property {
 
     private boolean isDictionaryKey = false;
     private Class<? extends DictionaryEnum> dicClass;
-    private FillType fillType;
-    private Class<? extends ColumnFillStrategy> fillStrategy;
+    private FillType fillType = FillType.NONE;
+    private Class<? extends ColumnFillStrategy> fillStrategy = DefaultColumnFillStrategy.class;
+    private String fillPattern = DefaultColumnFillStrategy.DEFAULT_FILL_PATTERN;
 
     public EntityField(Field field) {
         this(field, false);
@@ -64,6 +68,7 @@ public class EntityField extends Property {
             }
             fillType = column.fillType();
             fillStrategy = column.fillStrategy();
+            fillPattern = column.fillDatePattern();
             return;
         }
 
@@ -145,19 +150,27 @@ public class EntityField extends Property {
         return value;
     }
 
-    public Object getValue(Object target, FillType type) {
+    /**
+     * 增加自动填充功能
+     *
+     * @param target 实体类
+     * @param operation 当前的操作，插入或更新
+     * @return 字段值
+     * @since 1.2.0
+     */
+    public Object getValue(Object target, Operation operation) {
         Object value = getValue(target);
-        if(this.fillType == FillType.NONE || type == null) {
+        if(this.fillType == FillType.NONE || !Operation.isInsertOrUpdate(operation)) {
             return value;
         }
-        if(this.fillType == FillType.INSERT && type == FillType.INSERT) {
-            return Utils.instantiate(this.fillStrategy).fill(getType(), value);
+        if(this.fillType == FillType.INSERT && operation == Operation.INSERT) {
+            return Common.getFillStrategy(this.fillStrategy).fill(getType(), value, this.fillPattern, operation);
         }
-        if(this.fillType == FillType.UPDATE && type == FillType.UPDATE) {
-            return Utils.instantiate(this.fillStrategy).fill(getType(), value);
+        if(this.fillType == FillType.UPDATE && operation == Operation.UPDATE) {
+            return Common.getFillStrategy(this.fillStrategy).fill(getType(), value, this.fillPattern, operation);
         }
         if(this.fillType == FillType.INSERT_UPDATE) {
-            return Utils.instantiate(this.fillStrategy).fill(getType(), value);
+            return Common.getFillStrategy(this.fillStrategy).fill(getType(), value, this.fillPattern, operation);
         }
         return value;
     }

@@ -8,8 +8,10 @@ import com.queryflow.utils.Utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -39,6 +41,7 @@ public class EntityReflector extends FieldReflector {
     @Override
     protected void initFieldInvokers() {
         Field[] fields = type.getDeclaredFields();
+
         if(fields.length > 0) {
             fieldInvokers = new HashMap<>(fields.length);
             columns = new HashMap<>(fields.length);

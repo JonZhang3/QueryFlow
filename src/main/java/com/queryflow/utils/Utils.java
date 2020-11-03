@@ -274,6 +274,10 @@ public final class Utils {
         return true;
     }
 
+    public static boolean isNotBlank(String src) {
+        return !isBlank(src);
+    }
+
     /**
      * 将小驼峰命名方式的字符串转换为 _ 命名方式
      * userName 输出 user_name
@@ -453,6 +457,25 @@ public final class Utils {
             return num.doubleValue() == 0;
         } else {
             return value == null;
+        }
+    }
+
+    /**
+     *
+     *
+     * @param type
+     * @param fieldMap
+     */
+    public static void getFields(Class<?> type, Map<String, Field> fieldMap) {
+        Field[] fields = type.getDeclaredFields();
+        if(fields.length > 0) {
+            for (Field field : fields) {
+                fieldMap.putIfAbsent(field.getName(), field);
+            }
+        }
+        Class<?> superclass = type.getSuperclass();
+        if(superclass != Object.class) {
+            getFields(superclass, fieldMap);
         }
     }
 
