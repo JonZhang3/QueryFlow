@@ -444,6 +444,18 @@ public final class Utils {
         }
     }
 
+    public static boolean isZeroValue(Class<?> clazz, Object value) {
+        if (boolean.class == clazz) {
+            return Boolean.FALSE.equals(value);
+        }
+        if (clazz.isPrimitive()) {
+            Number num = (Number) value;
+            return num.doubleValue() == 0;
+        } else {
+            return value == null;
+        }
+    }
+
     private static File getRootJarFile(JarFile jarFile) {
         String name = jarFile.getName();
         int separator = name.indexOf("!/");

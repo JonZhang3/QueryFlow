@@ -47,7 +47,6 @@ public class Property implements FieldInvoker {
                 this.field.setAccessible(true);
             } catch (Exception ignore) {
             }
-
         }
     }
 

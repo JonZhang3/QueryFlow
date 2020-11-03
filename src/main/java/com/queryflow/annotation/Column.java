@@ -1,7 +1,7 @@
 package com.queryflow.annotation;
 
 import com.queryflow.common.ColumnFillStrategy;
-import com.queryflow.common.ColumnFillType;
+import com.queryflow.common.FillType;
 import com.queryflow.common.DefaultColumnFillStrategy;
 import com.queryflow.common.DictionaryEnum;
 
@@ -40,7 +40,7 @@ public @interface Column {
      */
     Class<? extends DictionaryEnum> dictionaryClass() default DictionaryEnum.class;
 
-    ColumnFillType fillType() default ColumnFillType.NONE;
+    FillType fillType() default FillType.NONE;
 
     Class<? extends ColumnFillStrategy> fillStrategy() default DefaultColumnFillStrategy.class;
 

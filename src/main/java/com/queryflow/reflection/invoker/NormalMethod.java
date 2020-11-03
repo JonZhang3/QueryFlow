@@ -9,7 +9,7 @@ import java.lang.reflect.Modifier;
 
 public class NormalMethod implements MethodInvoker {
 
-    private Method method;
+    private final Method method;
 
     public NormalMethod(Method method) {
         Assert.notNull(method);

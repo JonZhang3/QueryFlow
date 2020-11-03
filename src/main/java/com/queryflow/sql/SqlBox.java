@@ -35,7 +35,7 @@ public final class SqlBox {
                 field = (EntityField) iterator.next();
                 if (field.isIdField()) {
                     value = field.getValue(entity);
-                    if (field.isZeroValue(entity)) {
+                    if (Utils.isZeroValue(field.getType(), value)) {
                         value = KeyGenerateUtil.generateId(field.getKeyGeneratorClass());
                     }
                     if (value != null) {
@@ -108,7 +108,7 @@ public final class SqlBox {
         Object value;
         if (field.isIdField()) {
             value = field.getValue(entity);
-            if(!ignoreNull && field.isZeroValue(entity)) {
+            if(!ignoreNull && Utils.isZeroValue(field.getType(), value)) {
                 value = KeyGenerateUtil.generateId(field.getKeyGeneratorClass());
             }
             if (value != null) {

@@ -1,6 +1,6 @@
 package com.queryflow.common;
 
-public enum ColumnFillType {
+public enum FillType {
 
     NONE,
     INSERT,
