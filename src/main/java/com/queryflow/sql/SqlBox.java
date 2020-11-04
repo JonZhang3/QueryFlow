@@ -1,8 +1,11 @@
 package com.queryflow.sql;
 
+import com.queryflow.accessor.Accessor;
+import com.queryflow.accessor.AccessorFactory;
 import com.queryflow.common.Operation;
 import com.queryflow.common.QueryFlowException;
 import com.queryflow.key.KeyGenerateUtil;
+import com.queryflow.reflection.User;
 import com.queryflow.reflection.entity.EntityField;
 import com.queryflow.reflection.entity.EntityReflector;
 import com.queryflow.reflection.ReflectionUtil;
@@ -11,7 +14,10 @@ import com.queryflow.utils.Assert;
 import com.queryflow.utils.Utils;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 public final class SqlBox {
 
@@ -30,10 +36,10 @@ public final class SqlBox {
             }
             Iterator<FieldInvoker> iterator = reflector.fieldIterator();
             EntityField field;
-            Object value;
             Insert insert = new Insert(reflector.getTableName());
             while (iterator.hasNext()) {
                 field = (EntityField) iterator.next();
+                Object value;
                 if (field.isIdField()) {
                     value = field.getValue(entity);
                     if (Utils.isZeroValue(field.getType(), value)) {
@@ -56,6 +62,47 @@ public final class SqlBox {
         return new Insert(table);
     }
 
+    public static <T> void batchInsert(Class<T> clazz, Collection<T> entities) {
+        Assert.notNull(clazz);
+        if (entities != null && entities.size() > 0) {
+            EntityReflector reflector = ReflectionUtil.forEntityClass(clazz);
+            if (reflector.isNormalBean()) {
+                throwNotTableBeanException(clazz.getName());
+            }
+            Iterator<FieldInvoker> iterator = reflector.fieldIterator();
+            EntityField field;
+            Insert insert = new Insert(reflector.getTableName());
+            while (iterator.hasNext()) {
+                field = (EntityField) iterator.next();
+                insert.column(field.getColumnName(), null);
+            }
+            String sql = insert.buildSql();
+            List<List<Object>> values = new LinkedList<>();
+            for (T entity : entities) {
+                List<Object> valueList = new LinkedList<>();
+                iterator = reflector.fieldIterator();
+                while (iterator.hasNext()) {
+                    field = (EntityField) iterator.next();
+                    Object value;
+                    if (field.isIdField()) {
+                        value = field.getValue(entity);
+                        if (Utils.isZeroValue(field.getType(), value)) {
+                            value = KeyGenerateUtil.generateId(field.getKeyGeneratorClass());
+                        }
+                        if (value != null) {
+                            valueList.add(value);
+                        }
+                    } else if (field.exists()) {
+                        value = field.getValue(entity, Operation.INSERT);
+                        valueList.add(value);
+                    }
+                }
+                values.add(valueList);
+            }
+            AccessorFactory.accessor().batch(sql, values);
+        }
+    }
+
     public static Update update(String table) {
         return new Update(table);
     }
@@ -67,9 +114,9 @@ public final class SqlBox {
     /**
      * 更新表，可以指定要更新的列
      *
-     * @param entity  包含更新内容的实体类，需要使用{@code @Table} 注解
+     * @param entity     包含更新内容的实体类，需要使用{@code @Table} 注解
      * @param ignoreNull 是否忽略为 null 的字段
-     * @param columns 要更新的列名（tips：这里是列名而不是字段名）
+     * @param columns    要更新的列名（tips：这里是列名而不是字段名）
      * @return 在之后编码更新的条件
      */
     public static Where<Update> update(Object entity, boolean ignoreNull, String... columns) {
@@ -109,7 +156,7 @@ public final class SqlBox {
         Object value;
         if (field.isIdField()) {
             value = field.getValue(entity);
-            if(!ignoreNull && Utils.isZeroValue(field.getType(), value)) {
+            if (!ignoreNull && Utils.isZeroValue(field.getType(), value)) {
                 value = KeyGenerateUtil.generateId(field.getKeyGeneratorClass());
             }
             if (value != null) {
@@ -117,8 +164,8 @@ public final class SqlBox {
             }
         } else if (field.exists()) {
             value = field.getValue(entity, Operation.UPDATE);
-            if(ignoreNull) {
-                if(value != null) {
+            if (ignoreNull) {
+                if (value != null) {
                     update.set(field.getColumnName(), value);
                 }
             } else {

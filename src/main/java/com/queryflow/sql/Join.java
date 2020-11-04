@@ -13,11 +13,14 @@ public final class Join {
     }
 
     public Select on(String left, String right, String... leftAndRight) {
-        select.appender.append(type.getType()).append(sentence).append(" on ")
-            .append(left).append(" = ").append(right);
+        select.stack.push(type.getType()).push(sentence).push(" ON ")
+            .push(left).push(" = ").push(right);
         if (leftAndRight != null && leftAndRight.length > 0) {
             for (int i = 0, len = leftAndRight.length; i < len - 1; i += 2) {
-                select.appender.append(leftAndRight[i]).append(" = ").append(leftAndRight[i + 1]);
+                if(i < len - 1) {
+                    select.stack.push(" AND ");
+                }
+                select.stack.push(leftAndRight[i]).push(" = ").push(leftAndRight[i + 1]);
             }
         }
         return select;

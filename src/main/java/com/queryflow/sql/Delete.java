@@ -7,14 +7,15 @@ import com.queryflow.utils.Utils;
 public final class Delete extends Where<Delete> {
 
     public Delete(String table) {
-        appender.append("DELETE FROM ").append(table);
+        stack.push("DELETE FROM ").push(table);
     }
 
     public String buildSql() {
+        StringBuilder sql = stack.toStr();
         if (hasWhere) {
-            return appender + ")";
+            return sql + ")";
         }
-        return appender.toString();
+        return sql.toString();
     }
 
     public int execute() {

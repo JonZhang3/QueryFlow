@@ -8,7 +8,7 @@ public enum ResultSetType {
     SCROLL_INSENSITIVE(ResultSet.TYPE_SCROLL_INSENSITIVE),
     SCROLL_SENSITIVE(ResultSet.TYPE_SCROLL_SENSITIVE);
 
-    private int value;
+    private final int value;
 
     ResultSetType(int value) {
         this.value = value;

@@ -17,9 +17,9 @@ public class SelectTest {
                   .and().between("D", 0, 10)
                   .or().le("E", 100)
                 .groupBy("F").having("G = 1");
-        assertEquals("SELECT SUM(num) FROM test WHERE (A = ? AND B IN (?, ?, ?)) OR (C <> ? AND D BETWEEN ? AND ? OR E <= ?) GROUP BY F HAVING G = 1",
+        assertEquals("SELECT SUM(num) FROM test WHERE (A = ?) OR (C <> ? AND D BETWEEN ? AND ? OR E <= ?) GROUP BY F HAVING G = 1",
                 select.buildSql());
-        assertArrayEquals(new Object[]{"a", 1, 2, 3, "c", 0, 10, 100}, select.getValues().toArray());
+        assertArrayEquals(new Object[]{"a", "c", 0, 10, 100}, select.getValues().toArray());
     }
 
 }

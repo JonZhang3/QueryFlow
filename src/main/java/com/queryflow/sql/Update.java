@@ -27,6 +27,7 @@ public final class Update extends Where<Update> {
 
     /**
      * id = id + 1
+     *
      * @param condition 条件
      * @return Update
      */
@@ -43,7 +44,7 @@ public final class Update extends Where<Update> {
         if (!noValueColumns.isEmpty()) {
             sql.append(", ");
         }
-        sql.append(Utils.join(", ", noValueColumns)).append(appender);
+        sql.append(Utils.join(", ", noValueColumns)).append(stack.toStr());
         if (hasWhere) {
             sql.append(")");
         }

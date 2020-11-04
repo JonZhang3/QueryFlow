@@ -15,15 +15,15 @@ public final class Select extends Where<Select> {
 
     public Select(String... columns) {
         if (columns == null || columns.length == 0) {
-            appender.append("SELECT *");
+            stack.push("SELECT *");
         } else {
-            appender.append("SELECT ");
+            stack.push("SELECT ");
             String column;
             for (int i = 0, len = columns.length; i < len; i++) {
                 column = columns[i];
-                appender.append(column);
+                stack.push(column);
                 if (i < len - 1) {
-                    appender.append(", ");
+                    stack.push(", ");
                 }
             }
         }
@@ -33,11 +33,11 @@ public final class Select extends Where<Select> {
         if (tables == null || tables.length == 0) {
             throw new IllegalArgumentException("must provide a table name");
         }
-        appender.append(" FROM ");
+        stack.push(" FROM ");
         for (int i = 0, len = tables.length; i < len; i++) {
-            appender.append(tables[i]);
+            stack.push(tables[i]);
             if (i < len - 1) {
-                appender.append(", ");
+                stack.push(", ");
             }
         }
         return this;
@@ -49,8 +49,7 @@ public final class Select extends Where<Select> {
         if (Utils.isBlank(alias)) {
             throw new IllegalArgumentException("must provide an alias");
         }
-        appender.append(" FROM (").append(select.buildSql()).append(") ")
-            .append(alias).append(" ");
+        stack.push(" FROM (").push(select.buildSql()).push(") ").push(alias).push(" ");
         this.values.addAll(select.getValues());
         return this;
     }
@@ -98,6 +97,11 @@ public final class Select extends Where<Select> {
         return join;
     }
 
+    public Select groupBy(String column) {
+        groupBy.append(column).append(",");
+        return this;
+    }
+
     public Select groupBy(String... columns) {
         if (columns != null && columns.length > 0) {
             for (String column : columns) {
@@ -129,9 +133,9 @@ public final class Select extends Where<Select> {
     public Select orderBy(String column, OrderType orderType) {
         String orderByType = "";
         if (orderType != null) {
-            orderByType = orderType.name();
+            orderByType = " " + orderType.name();
         }
-        orderBy.append(column).append(' ').append(orderByType).append(",");
+        orderBy.append(column).append(orderByType).append(",");
         return this;
     }
 
@@ -146,7 +150,7 @@ public final class Select extends Where<Select> {
     }
 
     public String buildSql() {
-        StringBuilder sql = new StringBuilder(appender);
+        StringBuilder sql = new StringBuilder(stack.toStr());
         if (hasWhere) {
             sql.append(")");
         }

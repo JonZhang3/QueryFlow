@@ -8,7 +8,7 @@ public enum FetchDirection {
     FETCH_REVERSE(ResultSet.FETCH_REVERSE),
     FETCH_UNKNOWN(ResultSet.FETCH_UNKNOWN);
 
-    private int value;
+    private final int value;
 
     FetchDirection(int value) {
         this.value = value;

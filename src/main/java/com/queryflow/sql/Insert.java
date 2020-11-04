@@ -10,10 +10,10 @@ import java.util.List;
 
 public final class Insert {
 
-    private String table;
-    private StringBuilder columns;
-    private List<Object> values;
-    private StringBuilder marks;
+    private final String table;
+    private final StringBuilder columns;
+    private final List<Object> values;
+    private final StringBuilder marks;
 
     public Insert(String table) {
         this.table = table;
