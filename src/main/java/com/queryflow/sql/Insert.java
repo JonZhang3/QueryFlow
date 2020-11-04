@@ -8,7 +8,7 @@ import com.queryflow.utils.Utils;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Insert {
+public final class Insert {
 
     private String table;
     private StringBuilder columns;

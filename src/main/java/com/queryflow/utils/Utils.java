@@ -460,11 +460,17 @@ public final class Utils {
         }
     }
 
+    public static Map<String, Field> getFields(Class<?> type) {
+        Map<String, Field> result = new LinkedHashMap<>();
+        getFields(type, result);
+        return result;
+    }
+
     /**
+     * 获取指定类中的字段，包括其祖先类中的字段，如果子类与祖先类中存在相同名称的字段，则保留子类中的字段
      *
-     *
-     * @param type
-     * @param fieldMap
+     * @param type 指定的类
+     * @param fieldMap 包含的字段
      */
     public static void getFields(Class<?> type, Map<String, Field> fieldMap) {
         Field[] fields = type.getDeclaredFields();

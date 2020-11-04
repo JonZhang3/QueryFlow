@@ -1,6 +1,6 @@
 package com.queryflow.sql;
 
-public class Join {
+public final class Join {
 
     private final JoinType type;
     private final Select select;

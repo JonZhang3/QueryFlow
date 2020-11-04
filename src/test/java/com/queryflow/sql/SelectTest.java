@@ -11,7 +11,7 @@ public class SelectTest {
                 .from("test")
                 .where()
                 .eq("A", "a")
-                .and().in("B", 1, 2, 3)
+                .and().in(false, "B", 1, 2, 3)
                 .orNew()
                   .notEq("C", "c")
                   .and().between("D", 0, 10)

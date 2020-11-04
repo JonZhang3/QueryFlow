@@ -8,6 +8,8 @@ import com.queryflow.utils.Assert;
 import com.queryflow.utils.Utils;
 
 import java.lang.reflect.*;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,19 +25,25 @@ public class Reflector {
     protected Map<String, FieldInvoker> fieldInvokers;
     protected Map<String, MethodInvoker> methodInvokers;
     protected boolean skipFinalField;
+    protected boolean containParentFields;
 
     public Reflector(Class<?> clazz) {
         this(clazz, true);
     }
 
     public Reflector(Class<?> clazz, boolean skipFinalField) {
+        this(clazz, false, skipFinalField);
+    }
+
+    public Reflector(Class<?> clazz, boolean containParentFields, boolean skipFinalField) {
         Assert.notNull(clazz);
 
         this.type = clazz;
+        this.skipFinalField = skipFinalField;
+        this.containParentFields = containParentFields;
         defaultConstructor();
         initFieldInvokers();
         initMethodInvokers();
-        this.skipFinalField = skipFinalField;
     }
 
     // 初始化默认构造方法
@@ -45,9 +53,14 @@ public class Reflector {
 
     // 初始化成员变量（包括静态、常量）
     protected void initFieldInvokers() {
-        Field[] fields = type.getDeclaredFields();
-        if (fields.length > 0) {
-            fieldInvokers = new HashMap<>(fields.length);
+        Collection<Field> fields;
+        if(this.containParentFields) {
+            fields = Arrays.asList(type.getDeclaredFields());
+        } else {
+            fields = Utils.getFields(type).values();
+        }
+        if (fields.size() > 0) {
+            fieldInvokers = new HashMap<>(fields.size());
             for (Field field : fields) {
                 if (!skipFinalField && !Modifier.isFinal(field.getModifiers())) {
                     fieldInvokers.put(field.getName(), createFieldInvoker(field));

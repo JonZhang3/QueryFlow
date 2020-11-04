@@ -7,11 +7,11 @@ import com.queryflow.utils.Utils;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Update extends Where<Update> {
+public final class Update extends Where<Update> {
 
-    private String table;
-    private List<String> columns;
-    private List<String> noValueColumns;
+    private final String table;
+    private final List<String> columns;
+    private final List<String> noValueColumns;
 
     public Update(String table) {
         this.table = table;

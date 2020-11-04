@@ -4,7 +4,7 @@ import com.queryflow.accessor.Accessor;
 import com.queryflow.accessor.AccessorFactory;
 import com.queryflow.utils.Utils;
 
-public class Delete extends Where<Delete> {
+public final class Delete extends Where<Delete> {
 
     public Delete(String table) {
         appender.append("DELETE FROM ").append(table);

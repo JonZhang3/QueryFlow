@@ -17,6 +17,7 @@ public abstract class Where<T> {
     protected List<Object> values = new LinkedList<>();
     protected StringBuilder appender = new StringBuilder();
     protected boolean hasWhere = false;
+    protected String lastFactor;
 
     public T where() {
         appender.append(" WHERE (");
@@ -35,6 +36,13 @@ public abstract class Where<T> {
         Assert.notNull(select);
         Assert.notThis(select, this);
         appender.append(" EXISTS (").append(select.buildSql()).append(") ");
+        return (T) this;
+    }
+
+    public T exists(boolean condition, Select select) {
+        if (condition) {
+            exists(select);
+        }
         return (T) this;
     }
 
@@ -122,7 +130,7 @@ public abstract class Where<T> {
     public T in(String column, Object... values) {
         appender.append(column).append(" IN (");
         if (values == null || values.length == 0) {
-            throw new QueryFlowException("");
+            throw new QueryFlowException("must provide values");
         }
         addValueAndMark(values);
         appender.append(")");
@@ -132,6 +140,23 @@ public abstract class Where<T> {
     public T in(boolean condition, String column, Object... values) {
         if (condition) {
             in(column, values);
+        }
+        return (T) this;
+    }
+
+    public T in(Select select) {
+        Assert.notNull(select);
+        if (this instanceof Select) {
+            Assert.notThis(select, this);
+        }
+        appender.append(" IN (").append(select.buildSql()).append(")");
+        values.addAll(select.getValues());
+        return (T) this;
+    }
+
+    public T in(boolean condition, Select select) {
+        if (condition) {
+            in(select);
         }
         return (T) this;
     }
@@ -149,6 +174,23 @@ public abstract class Where<T> {
     public T notIn(boolean condition, String column, Object... values) {
         if (condition) {
             notIn(column, values);
+        }
+        return (T) this;
+    }
+
+    public T notIn(Select select) {
+        Assert.notNull(select);
+        if (this instanceof Select) {
+            Assert.notThis(select, this);
+        }
+        appender.append(" NOT IN (").append(select.buildSql()).append(") ");
+        values.addAll(select.getValues());
+        return (T) this;
+    }
+
+    public T notIn(boolean condition, Select select) {
+        if (condition) {
+            notIn(select);
         }
         return (T) this;
     }

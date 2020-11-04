@@ -7,7 +7,7 @@ import com.queryflow.utils.Utils;
 
 import java.util.List;
 
-public class Select extends Where<Select> {
+public final class Select extends Where<Select> {
 
     private final StringBuilder orderBy = new StringBuilder();
     private final StringBuilder groupBy = new StringBuilder();
@@ -98,11 +98,6 @@ public class Select extends Where<Select> {
         return join;
     }
 
-    public Select groupBy(String column) {
-        groupBy.append(column).append(",");
-        return this;
-    }
-
     public Select groupBy(String... columns) {
         if (columns != null && columns.length > 0) {
             for (String column : columns) {
@@ -132,10 +127,11 @@ public class Select extends Where<Select> {
     }
 
     public Select orderBy(String column, OrderType orderType) {
-        if (orderType == null) {
-            orderType = OrderType.DESC;
+        String orderByType = "";
+        if (orderType != null) {
+            orderByType = orderType.name();
         }
-        orderBy.append(column).append(' ').append(orderType.name()).append(",");
+        orderBy.append(column).append(' ').append(orderByType).append(",");
         return this;
     }
 

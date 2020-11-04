@@ -9,6 +9,7 @@ import com.queryflow.utils.Utils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,17 +35,18 @@ public class EntityReflector extends FieldReflector {
     }
 
     public EntityReflector(Class<?> clazz, boolean skipFinalField) {
-        super(clazz, skipFinalField);
+        super(clazz, true, skipFinalField);
         parseTableName(clazz);
     }
 
     @Override
     protected void initFieldInvokers() {
-        Field[] fields = type.getDeclaredFields();
-
-        if(fields.length > 0) {
-            fieldInvokers = new HashMap<>(fields.length);
-            columns = new HashMap<>(fields.length);
+//        Field[] fields = type.getDeclaredFields();
+        Map<String, Field> fieldMap = Utils.getFields(type);
+        Collection<Field> fields = fieldMap.values();
+        if(fields.size() > 0) {
+            fieldInvokers = new HashMap<>(fields.size());
+            columns = new HashMap<>(fields.size());
             for (Field field : fields) {
                 if (!skipFinalField && !Modifier.isFinal(field.getModifiers())) {
                     EntityField invoker = (EntityField) createFieldInvoker(field);

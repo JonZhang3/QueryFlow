@@ -1,5 +1,8 @@
 package com.queryflow;
 
+import com.queryflow.reflection.ReflectionUtil;
+import com.queryflow.reflection.entity.EntityField;
+import com.queryflow.reflection.entity.EntityReflector;
 import com.queryflow.utils.Utils;
 
 import java.lang.reflect.Field;
@@ -9,26 +12,21 @@ import java.util.Map;
 public class Main {
 
     public static void main(String[] args) {
-        Map<String, Field> fields = new HashMap<>();
-        Utils.getFields(User.class, fields);
-        System.out.println(fields);
+        EntityReflector reflector = ReflectionUtil.forEntityClass(User.class);
+        EntityField test = reflector.getField("test");
+        System.out.println(test);
+        User user = new User();
+        test.setValue(user, "123");
+        System.out.println(test.getValue(user));
+        System.out.println(((Base) user).test);
     }
 
     static class Base {
         private String test;
-
-        public String getTest() {
-            return test;
-        }
-
-        public void setTest(String test) {
-            this.test = test;
-        }
     }
 
     static class User extends Base {
         private String username;
-        private String test;
 
         public String getUsername() {
             return username;
@@ -38,13 +36,6 @@ public class Main {
             this.username = username;
         }
 
-        public String getTest() {
-            return test;
-        }
-
-        public void setTest(String test) {
-            this.test = test;
-        }
     }
 
 }

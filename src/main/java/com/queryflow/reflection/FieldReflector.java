@@ -19,6 +19,10 @@ public class FieldReflector extends Reflector {
         super(clazz, skipFinalField);
     }
 
+    public FieldReflector(Class<?> clazz, boolean containParentFields, boolean skipFinalField) {
+        super(clazz, containParentFields, skipFinalField);
+    }
+
     @Override
     protected void initMethodInvokers() {
         this.methodInvokers = Collections.emptyMap();
