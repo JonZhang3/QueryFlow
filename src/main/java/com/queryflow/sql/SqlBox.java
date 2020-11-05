@@ -1,11 +1,9 @@
 package com.queryflow.sql;
 
-import com.queryflow.accessor.Accessor;
 import com.queryflow.accessor.AccessorFactory;
 import com.queryflow.common.Operation;
 import com.queryflow.common.QueryFlowException;
 import com.queryflow.key.KeyGenerateUtil;
-import com.queryflow.reflection.User;
 import com.queryflow.reflection.entity.EntityField;
 import com.queryflow.reflection.entity.EntityReflector;
 import com.queryflow.reflection.ReflectionUtil;
@@ -63,6 +61,10 @@ public final class SqlBox {
     }
 
     public static <T> void batchInsert(Class<T> clazz, Collection<T> entities) {
+        batchInsert(clazz, entities, "");
+    }
+
+    public static <T> void batchInsert(Class<T> clazz, Collection<T> entities, String dataSourceTag) {
         Assert.notNull(clazz);
         if (entities != null && entities.size() > 0) {
             EntityReflector reflector = ReflectionUtil.forEntityClass(clazz);
@@ -99,12 +101,31 @@ public final class SqlBox {
                 }
                 values.add(valueList);
             }
-            AccessorFactory.accessor().batch(sql, values);
+            AccessorFactory.accessor(dataSourceTag).batch(sql, values);
         }
     }
 
     public static Update update(String table) {
         return new Update(table);
+    }
+
+    public static Where<Update> update(Object entity, Class<?> updateGroupClass) {
+        Assert.notNull(entity);
+        Assert.notNull(updateGroupClass);
+        EntityReflector reflector = ReflectionUtil.forEntityClass(entity.getClass());
+        if (reflector.isNormalBean()) {
+            throwNotTableBeanException(entity.getClass().getName());
+        }
+        Update update = new Update(reflector.getTableName());
+        Iterator<FieldInvoker> iterator = reflector.fieldIterator();
+        EntityField field = null;
+        while (iterator.hasNext()) {
+            field = (EntityField) iterator.next();
+            if(field.containsUpdateGroupClass(updateGroupClass)) {
+
+            }
+        }
+        return update;
     }
 
     public static Where<Update> update(Object entity, String... columns) {
@@ -120,49 +141,39 @@ public final class SqlBox {
      * @return 在之后编码更新的条件
      */
     public static Where<Update> update(Object entity, boolean ignoreNull, String... columns) {
-        if (entity != null) {
-            if (columns == null) {
-                columns = new String[0];
-            }
-            EntityReflector reflector = ReflectionUtil.forEntityClass(entity.getClass());
-            if (reflector.isNormalBean()) {
-                throwNotTableBeanException(entity.getClass().getName());
-            }
-            EntityField field = null;
-            Update update = new Update(reflector.getTableName());
-            if (columns.length == 0) {
-                Iterator<FieldInvoker> iterator = reflector.fieldIterator();
-                while (iterator.hasNext()) {
-                    field = (EntityField) iterator.next();
-                    updateSet(entity, field, update, ignoreNull);
-                }
-            } else {
-                for (String column : columns) {
-                    if (Utils.isNotEmpty(column)) {
-                        field = reflector.getFieldByColumnName(column);
-                    }
-                    if (field == null) {
-                        throw new QueryFlowException("unknow column name [" + column + "]");
-                    }
-                    updateSet(entity, field, update, ignoreNull);
-                }
-            }
-            return update;
+        Assert.notNull(entity);
+        if (columns == null) {
+            columns = new String[0];
         }
-        throw new QueryFlowException("the entity is null.");
+        EntityReflector reflector = ReflectionUtil.forEntityClass(entity.getClass());
+        if (reflector.isNormalBean()) {
+            throwNotTableBeanException(entity.getClass().getName());
+        }
+        EntityField field = null;
+        Update update = new Update(reflector.getTableName());
+        if (columns.length == 0) {
+            Iterator<FieldInvoker> iterator = reflector.fieldIterator();
+            while (iterator.hasNext()) {
+                field = (EntityField) iterator.next();
+                updateSet(entity, field, update, ignoreNull);
+            }
+        } else {
+            for (String column : columns) {
+                if (Utils.isNotEmpty(column)) {
+                    field = reflector.getFieldByColumnName(column);
+                }
+                if (field == null) {
+                    throw new QueryFlowException("unknow column name [" + column + "]");
+                }
+                updateSet(entity, field, update, ignoreNull);
+            }
+        }
+        return update;
     }
 
     private static void updateSet(Object entity, EntityField field, Update update, boolean ignoreNull) {
         Object value;
-        if (field.isIdField()) {
-            value = field.getValue(entity);
-            if (!ignoreNull && Utils.isZeroValue(field.getType(), value)) {
-                value = KeyGenerateUtil.generateId(field.getKeyGeneratorClass());
-            }
-            if (value != null) {
-                update.set(field.getColumnName(), value);
-            }
-        } else if (field.exists()) {
+        if(!field.isIdField() && field.exists()) {
             value = field.getValue(entity, Operation.UPDATE);
             if (ignoreNull) {
                 if (value != null) {

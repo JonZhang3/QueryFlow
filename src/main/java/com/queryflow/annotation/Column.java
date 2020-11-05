@@ -68,4 +68,6 @@ public @interface Column {
      */
     String fillDatePattern() default DefaultColumnFillStrategy.DEFAULT_FILL_PATTERN;
 
+    Class<?>[] updateGroups() default {};
+
 }

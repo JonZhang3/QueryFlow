@@ -13,6 +13,8 @@ import com.queryflow.reflection.invoker.Property;
 import com.queryflow.utils.Utils;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EntityField extends Property {
 
@@ -28,6 +30,7 @@ public class EntityField extends Property {
     private FillType fillType = FillType.NONE;
     private Class<? extends ColumnFillStrategy> fillStrategy = DefaultColumnFillStrategy.class;
     private String fillPattern = DefaultColumnFillStrategy.DEFAULT_FILL_PATTERN;
+    private final Map<Class<?>, Short> updateGroupClasses = new HashMap<>();
 
     public EntityField(Field field) {
         this(field, false);
@@ -51,30 +54,30 @@ public class EntityField extends Property {
             isIdField = true;
             columnName = id.value();
             keyGeneratorClass = id.keyGenerator();
-            return;
-        }
-
-        Column column = field.getAnnotation(Column.class);
-        if (column != null) {
-            isIdField = false;
-            columnName = column.value();
-            exists = column.exists();
-            isDictionaryKey = column.isDictionaryKey();
-            if (isDictionaryKey) {
-                dicClass = column.dictionaryClass();
-                if (dicClass == DictionaryEnum.class && DictionaryEnum.class.isAssignableFrom(getType())) {
-                    dicClass = (Class<? extends DictionaryEnum>) getType();
+        } else {
+            Column column = field.getAnnotation(Column.class);
+            if (column != null) {
+                isIdField = false;
+                columnName = column.value();
+                exists = column.exists();
+                isDictionaryKey = column.isDictionaryKey();
+                if (isDictionaryKey) {
+                    dicClass = column.dictionaryClass();
+                    if (dicClass == DictionaryEnum.class && DictionaryEnum.class.isAssignableFrom(getType())) {
+                        dicClass = (Class<? extends DictionaryEnum>) getType();
+                    }
+                }
+                fillType = column.fillType();
+                fillStrategy = column.fillStrategy();
+                fillPattern = column.fillDatePattern();
+                Class<?>[] classes = column.updateGroups();
+                if(classes.length > 0) {
+                    for (Class<?> clazz : classes) {
+                        updateGroupClasses.put(clazz, (short) 1);
+                    }
                 }
             }
-            fillType = column.fillType();
-            fillStrategy = column.fillStrategy();
-            fillPattern = column.fillDatePattern();
-            return;
         }
-
-        isIdField = false;
-        exists = true;
-        isDictionaryKey = false;
     }
 
     public boolean exists() {
@@ -173,6 +176,10 @@ public class EntityField extends Property {
             return Common.getFillStrategy(this.fillStrategy).fill(getType(), value, this.fillPattern, operation);
         }
         return value;
+    }
+
+    public boolean containsUpdateGroupClass(Class<?> clazz) {
+        return updateGroupClasses.containsKey(clazz);
     }
 
 }
