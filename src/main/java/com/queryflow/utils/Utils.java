@@ -47,9 +47,9 @@ public final class Utils {
             cl = Thread.currentThread().getContextClassLoader();
         } catch (Throwable ignore) {
         }
-        if(cl == null) {
+        if (cl == null) {
             cl = Utils.class.getClassLoader();
-            if(cl == null) {
+            if (cl == null) {
                 try {
                     cl = ClassLoader.getSystemClassLoader();
                 } catch (Throwable ignore) {
@@ -61,6 +61,7 @@ public final class Utils {
 
     /**
      * 判断指定的 Class 是否是基本数据类型或其包装类型
+     *
      * @param clazz Class
      * @return 如果是基本数据类型或其包装类型，返回 {@code true}。否则返回 {@code false}
      */
@@ -73,7 +74,7 @@ public final class Utils {
      * 该类必须有一个不包含参数的 public 构造方法
      *
      * @param clazz 指定类
-     * @param <T> 类型
+     * @param <T>   类型
      * @return 指定类的一个对象，如果参数为空，返回 {@code null}
      * @throws ClassInstantiationException 如果指定类是一个接口或者抽象类，或者不包含公共的默认构造方法，抛出该异常
      */
@@ -97,7 +98,7 @@ public final class Utils {
      * 获取指定类的无参数默认构造方法
      *
      * @param clazz 指定类的 Class 对象
-     * @param <T> 类型
+     * @param <T>   类型
      * @return 如果传入 {@code null}，返回 {@code null}。如果没有默认构造方法，返回 {@code null}。
      * 如果默认构造方法是私有的，且不可以通过反射访问类的私有方法，返回 {@code null}。
      */
@@ -314,7 +315,7 @@ public final class Utils {
      * @param separator 间隔符
      * @param values    字符串列表
      * @param suffix    后缀
-     * @param <T> 集合中对象的类型，默认会调用 {@code toString} 方法
+     * @param <T>       集合中对象的类型，默认会调用 {@code toString} 方法
      * @return 拼接后的字符串
      */
     public static <T> String join(String separator, Collection<T> values, String suffix) {
@@ -354,7 +355,7 @@ public final class Utils {
      *
      * @param separator 间隔符
      * @param values    字符串列表
-     * @param <T> 默认会调用集合中对象的 {@code toString} 方法
+     * @param <T>       默认会调用集合中对象的 {@code toString} 方法
      * @return 拼接后的字符串
      */
     public static <T> String join(String separator, Collection<T> values) {
@@ -433,13 +434,13 @@ public final class Utils {
             URL location = Utils.class.getProtectionDomain().getCodeSource().getLocation();
             URLConnection connection = location.openConnection();
             File source;
-            if(connection instanceof JarURLConnection) {
+            if (connection instanceof JarURLConnection) {
                 source = getRootJarFile(((JarURLConnection) connection).getJarFile());
             } else {
                 source = new File(location.toURI());
             }
             source = source.getAbsoluteFile();
-            if(source.isFile()) {
+            if (source.isFile()) {
                 source = source.getParentFile();
             }
             return source.getAbsoluteFile();
@@ -469,20 +470,28 @@ public final class Utils {
     /**
      * 获取指定类中的字段，包括其祖先类中的字段，如果子类与祖先类中存在相同名称的字段，则保留子类中的字段
      *
-     * @param type 指定的类
+     * @param type     指定的类
      * @param fieldMap 包含的字段
      */
     public static void getFields(Class<?> type, Map<String, Field> fieldMap) {
         Field[] fields = type.getDeclaredFields();
-        if(fields.length > 0) {
+        if (fields.length > 0) {
             for (Field field : fields) {
                 fieldMap.putIfAbsent(field.getName(), field);
             }
         }
         Class<?> superclass = type.getSuperclass();
-        if(superclass != Object.class) {
+        if (superclass != Object.class) {
             getFields(superclass, fieldMap);
         }
+    }
+
+    public static Byte[] toObjectArray(byte[] arrays) {
+        final Byte[] result = new Byte[arrays.length];
+        for (int i = 0, len = arrays.length; i < len; i++) {
+            result[i] = arrays[i];
+        }
+        return result;
     }
 
     private static File getRootJarFile(JarFile jarFile) {

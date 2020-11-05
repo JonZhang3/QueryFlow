@@ -8,6 +8,7 @@ import com.queryflow.common.DictionaryEnum;
 import com.queryflow.annotation.Column;
 import com.queryflow.annotation.Id;
 import com.queryflow.common.Operation;
+import com.queryflow.common.type.TypeHandler;
 import com.queryflow.key.KeyGenerator;
 import com.queryflow.reflection.invoker.Property;
 import com.queryflow.utils.Utils;
@@ -31,6 +32,7 @@ public class EntityField extends Property {
     private Class<? extends ColumnFillStrategy> fillStrategy = DefaultColumnFillStrategy.class;
     private String fillPattern = DefaultColumnFillStrategy.DEFAULT_FILL_PATTERN;
     private final Map<Class<?>, Short> updateGroupClasses = new HashMap<>();
+    private Class<? extends TypeHandler<?>> typeHandler;
 
     public EntityField(Field field) {
         this(field, false);
@@ -67,6 +69,7 @@ public class EntityField extends Property {
                         dicClass = (Class<? extends DictionaryEnum>) getType();
                     }
                 }
+                typeHandler = column.typeHandler();
                 fillType = column.fillType();
                 fillStrategy = column.fillStrategy();
                 fillPattern = column.fillDatePattern();
@@ -148,6 +151,10 @@ public class EntityField extends Property {
                 }
             } else if (DictionaryEnum.class.isAssignableFrom(this.getType())) {
                 return ((DictionaryEnum) value).getCode();
+            }
+        } else {
+            if(fillType == FillType.NONE) {
+
             }
         }
         return value;

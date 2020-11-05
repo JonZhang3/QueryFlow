@@ -40,6 +40,7 @@ public abstract class Where<T> {
             Assert.notThis(select, this);
         }
         stack.push(" EXISTS (").push(select.buildSql()).push(") ");
+        values.addAll(select.getValues());
         return (T) this;
     }
 
@@ -47,6 +48,26 @@ public abstract class Where<T> {
         if (condition) {
             checkAndPushFactor();
             exists(select);
+        } else {
+            checkAndPopFactor();
+        }
+        return (T) this;
+    }
+
+    public T notExists(Select select) {
+        Assert.notNull(select);
+        if (this instanceof Select) {
+            Assert.notThis(select, this);
+        }
+        stack.push(" NOT EXISTS (").push(select.buildSql()).push(") ");
+        values.addAll(select.getValues());
+        return (T) this;
+    }
+
+    public T notExists(boolean condition, Select select) {
+        if (condition) {
+            checkAndPushFactor();
+            notExists(select);
         } else {
             checkAndPopFactor();
         }
@@ -380,7 +401,7 @@ public abstract class Where<T> {
         } else {
             stack.push(factor);
         }
-        if(sentence != null) {
+        if (sentence != null) {
             stack.push(sentence);
         }
     }

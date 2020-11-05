@@ -22,10 +22,23 @@ public final class SqlBox {
     private SqlBox() {
     }
 
+    /**
+     * 插入数据，需指定一个使用 {@code Table} 注解的类
+     *
+     * @param entity 实体类
+     * @return 数据库中影响的行数
+     */
     public static int insert(Object entity) {
         return insert(entity, "");
     }
 
+    /**
+     * 插入数据，需指定一个使用 {@code Table} 注解的类
+     *
+     * @param entity 实体类
+     * @param dataSourceTag 数据源，多数据源情况下使用
+     * @return 数据库中影响的行数
+     */
     public static int insert(Object entity, String dataSourceTag) {
         if (entity != null) {
             EntityReflector reflector = ReflectionUtil.forEntityClass(entity.getClass());
@@ -60,10 +73,27 @@ public final class SqlBox {
         return new Insert(table);
     }
 
+    /**
+     * 批量插入指定类型实体类的数据
+     *
+     * @param clazz 实体类的 {@code Class}
+     * @param entities 实体类数据列表
+     * @param <T> 实体类泛型参数
+     * @since 1.2.0
+     */
     public static <T> void batchInsert(Class<T> clazz, Collection<T> entities) {
         batchInsert(clazz, entities, "");
     }
 
+    /**
+     * 批量插入指定类型实体类的数据
+     *
+     * @param clazz 实体类的 {@code Class}
+     * @param entities 实体类数据列表
+     * @param dataSourceTag 数据源，多数据源情况下使用
+     * @param <T> 实体类泛型参数
+     * @since 1.2.0
+     */
     public static <T> void batchInsert(Class<T> clazz, Collection<T> entities, String dataSourceTag) {
         Assert.notNull(clazz);
         if (entities != null && entities.size() > 0) {
@@ -109,6 +139,15 @@ public final class SqlBox {
         return new Update(table);
     }
 
+    /**
+     * 更新指定实体类对应表的数据，可指定更新分组
+     *
+     * @param entity 实体类
+     * @param updateGroupClass 更新分组
+     * @return {@code Where}，可自定义更新条件
+     * @see com.queryflow.annotation.Column#updateGroups()
+     * @since 1.2.0
+     */
     public static Where<Update> update(Object entity, Class<?> updateGroupClass) {
         Assert.notNull(entity);
         Assert.notNull(updateGroupClass);
@@ -118,16 +157,23 @@ public final class SqlBox {
         }
         Update update = new Update(reflector.getTableName());
         Iterator<FieldInvoker> iterator = reflector.fieldIterator();
-        EntityField field = null;
+        EntityField field;
         while (iterator.hasNext()) {
             field = (EntityField) iterator.next();
             if(field.containsUpdateGroupClass(updateGroupClass)) {
-
+                updateSet(entity, field, update, false);
             }
         }
         return update;
     }
 
+    /**
+     * 更新指定实体类对应表的指定列
+     *
+     * @param entity 实体类
+     * @param columns 指定的列名
+     * @return {@code Where} 可自定义条件
+     */
     public static Where<Update> update(Object entity, String... columns) {
         return update(entity, false, columns);
     }
@@ -138,7 +184,7 @@ public final class SqlBox {
      * @param entity     包含更新内容的实体类，需要使用{@code @Table} 注解
      * @param ignoreNull 是否忽略为 null 的字段
      * @param columns    要更新的列名（tips：这里是列名而不是字段名）
-     * @return 在之后编码更新的条件
+     * @return {@code Where} 可自定义条件
      */
     public static Where<Update> update(Object entity, boolean ignoreNull, String... columns) {
         Assert.notNull(entity);
@@ -240,6 +286,13 @@ public final class SqlBox {
         return new Select(columns).from(reflector.getTableName());
     }
 
+    /**
+     * 查询指定类中的所有字段数据
+     *
+     * @param table 查询的表名称
+     * @param requiredType 包含要查询的字段的类
+     * @return {@code Select}
+     */
     public static Select select(String table, Class<?> requiredType) {
         EntityReflector reflector = ReflectionUtil.forEntityClass(requiredType);
         Iterator<FieldInvoker> iterator = reflector.fieldIterator();

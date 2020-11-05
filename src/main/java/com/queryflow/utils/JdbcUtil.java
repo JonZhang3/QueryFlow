@@ -6,9 +6,16 @@ import com.queryflow.log.Log;
 import com.queryflow.log.LogFactory;
 
 import javax.sql.DataSource;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.*;
+import java.time.Instant;
+import java.time.Month;
+import java.time.Year;
+import java.time.YearMonth;
 
 /**
  * 关于数据库操作的工具类
@@ -208,34 +215,85 @@ public final class JdbcUtil {
         Object value;
         if (String.class.equals(valueType)) {
             return rs.getString(index);
-        } else if (int.class.equals(valueType) || Integer.class.equals(valueType)) {
+        } else if (char.class.equals(valueType)) {
+            String str = rs.getString(index);
+            return str == null ? 0 : str.charAt(0);
+        } else if (Character.class.equals(valueType)) {
+            String str = rs.getString(index);
+            return str == null ? null : str.charAt(0);
+        } else if (int.class.equals(valueType)) {
             value = rs.getInt(index);
-        } else if (short.class.equals(valueType) || Short.class.equals(valueType)) {
+        } else if (Integer.class.equals(valueType)) {
+            int result = rs.getInt(index);
+            return result == 0 && rs.wasNull() ? null : result;
+        } else if (short.class.equals(valueType)) {
             value = rs.getShort(index);
-        } else if (long.class.equals(valueType) || Long.class.equals(valueType)) {
+        } else if (Short.class.equals(valueType)) {
+            short result = rs.getShort(index);
+            return result == 0 && rs.wasNull() ? null : result;
+        } else if (long.class.equals(valueType)) {
             value = rs.getLong(index);
-        } else if (byte.class.equals(valueType) || Byte.class.equals(valueType)) {
+        } else if (Long.class.equals(valueType)) {
+            long result = rs.getLong(index);
+            return result == 0 && rs.wasNull() ? null : result;
+        } else if (byte.class.equals(valueType)) {
             value = rs.getByte(index);
-        } else if (float.class.equals(valueType) || Float.class.equals(valueType)) {
+        } else if (Byte.class.equals(valueType)) {
+            byte result = rs.getByte(index);
+            return result == 0 && rs.wasNull() ? null : result;
+        } else if (float.class.equals(valueType)) {
             value = rs.getFloat(index);
-        } else if (double.class.equals(valueType) || Double.class.equals(valueType) || Number.class.equals(valueType)) {
+        } else if (Float.class.equals(valueType)) {
+            float result = rs.getFloat(index);
+            return result == 0 && rs.wasNull() ? null : result;
+        } else if (double.class.equals(valueType)) {
             value = rs.getDouble(index);
-        } else if (boolean.class.equals(valueType) || Boolean.class.equals(valueType)) {
+        } else if (Double.class.equals(valueType) || Number.class.equals(valueType)) {
+            double result = rs.getDouble(index);
+            return result == 0 && rs.wasNull() ? null : result;
+        } else if (boolean.class.equals(valueType)) {
             value = rs.getBoolean(index);
+        } else if (Boolean.class.equals(valueType)) {
+            boolean result = rs.getBoolean(index);
+            return !result && rs.wasNull() ? null : result;
         } else if (BigDecimal.class.equals(valueType)) {
             return rs.getBigDecimal(index);
+        } else if (BigInteger.class.equals(valueType)) {
+            BigDecimal bigDecimal = rs.getBigDecimal(index);
+            return bigDecimal == null ? null : bigDecimal.toBigInteger();
         } else if (Time.class.equals(valueType)) {
             return rs.getTime(index);
         } else if (Date.class.equals(valueType)) {
             return rs.getDate(index);
-        } else if (Timestamp.class.equals(valueType) || java.util.Date.class.equals(valueType)) {
+        } else if (java.util.Date.class.equals(valueType)) {
+            Date sqlDate = rs.getDate(index);
+            return sqlDate == null ? null : new java.util.Date(sqlDate.getTime());
+        } else if (Timestamp.class.equals(valueType)) {
             return rs.getTimestamp(index);
         } else if (byte[].class.equals(valueType)) {
             return rs.getBytes(index);
+        } else if (Byte[].class.equals(valueType)) {
+            Blob blob = rs.getBlob(index);
+            return blob == null ? null : Utils.toObjectArray(blob.getBytes(1, (int) blob.length()));
         } else if (Blob.class.equals(valueType)) {
             return rs.getBlob(index);
         } else if (Clob.class.equals(valueType)) {
             return rs.getClob(index);
+        } else if (Reader.class.isAssignableFrom(valueType)) {
+            Clob clob = rs.getClob(index);
+            return clob == null ? null : clob.getCharacterStream();
+        } else if (Instant.class.equals(valueType)) {
+            Timestamp result = rs.getTimestamp(index);
+            return result == null ? null : result.toInstant();
+        } else if (Month.class.equals(valueType)) {
+            int result = rs.getInt(index);
+            return result == 0 && rs.wasNull() ? null : Month.of(result);
+        } else if (YearMonth.class.equals(valueType)) {
+            String result = rs.getString(index);
+            return result == null ? null : YearMonth.parse(result);
+        } else if (Year.class.equals(valueType)) {
+            int result = rs.getInt(index);
+            return result == 0 && rs.wasNull() ? null : Year.of(result);
         } else {
             if (getObjectWithTypeAvailable) {
                 try {

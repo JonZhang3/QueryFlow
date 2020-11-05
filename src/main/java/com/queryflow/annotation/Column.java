@@ -4,6 +4,8 @@ import com.queryflow.common.ColumnFillStrategy;
 import com.queryflow.common.FillType;
 import com.queryflow.common.DefaultColumnFillStrategy;
 import com.queryflow.common.DictionaryEnum;
+import com.queryflow.common.type.DefaultTypeHandler;
+import com.queryflow.common.type.TypeHandler;
 
 import java.lang.annotation.*;
 
@@ -68,6 +70,13 @@ public @interface Column {
      */
     String fillDatePattern() default DefaultColumnFillStrategy.DEFAULT_FILL_PATTERN;
 
+    /**
+     * 更新数据时的组别，无需在更新时一个一个指定列名称，只需在注解上设置响应的 {@code Class}，即可自动更新这些字段
+     *
+     * @return 任意 {@code Class} 实例
+     */
     Class<?>[] updateGroups() default {};
+
+    Class<? extends TypeHandler<?>> typeHandler() default DefaultTypeHandler.class;
 
 }
