@@ -11,9 +11,7 @@ public class MysqlPageSqlMatchProcess extends AbstractPageSqlMatchProcess {
 
     @Override
     protected String internalSqlProcess(String sql, int start, int limit) {
-        StringBuilder pageSql = new StringBuilder(sql);
-        pageSql.append(" LIMIT ").append(limit).append(" OFFSET ").append(start);
-        return pageSql.toString();
+        return sql + " LIMIT " + limit + " OFFSET " + start;
     }
 
 }

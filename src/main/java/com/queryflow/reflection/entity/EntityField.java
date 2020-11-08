@@ -32,7 +32,7 @@ public class EntityField extends Property {
     private Class<? extends ColumnFillStrategy> fillStrategy = DefaultColumnFillStrategy.class;
     private String fillPattern = DefaultColumnFillStrategy.DEFAULT_FILL_PATTERN;
     private final Map<Class<?>, Short> updateGroupClasses = new HashMap<>();
-    private Class<? extends TypeHandler<?>> typeHandler;
+    private Class<? extends TypeHandler> typeHandler;
 
     public EntityField(Field field) {
         this(field, false);
@@ -113,6 +113,10 @@ public class EntityField extends Property {
         return dicClass;
     }
 
+    public Class<? extends TypeHandler> getTypeHandler() {
+        return typeHandler;
+    }
+
     @Override
     public void setValue(Object target, Object value) {
         if (isDictionaryKey()) {
@@ -138,6 +142,7 @@ public class EntityField extends Property {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Object getValue(Object target) {
         Object value = super.getValue(target);
@@ -154,7 +159,7 @@ public class EntityField extends Property {
             }
         } else {
             if(fillType == FillType.NONE) {
-
+                value = Common.getTypeHandler(this.typeHandler).setToStatement(value);
             }
         }
         return value;

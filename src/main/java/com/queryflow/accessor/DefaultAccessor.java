@@ -215,16 +215,16 @@ public class DefaultAccessor implements Accessor {
     }
 
     private int count(String sql, List<Object> params, boolean close) {
-        Number number = createQuery(getCountSql(sql)).bindList(params).one(Number.class);
+        Number number = createQuery(getCountSql(sql, params)).bindList(params).one(Number.class);
         if (close) {
             close();
         }
         return number != null ? number.intValue() : 0;
     }
 
-    private String getCountSql(String sql) {
+    private String getCountSql(String sql, List<Object> values) {
         PageSqlMatchProcess process = pageSelector.select(dbType.value());
-        return process.getCountSql(sql);
+        return process.getCountSql(sql, values);
     }
 
     @Override

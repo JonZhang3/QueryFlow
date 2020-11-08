@@ -74,9 +74,18 @@ public @interface Column {
      * 更新数据时的组别，无需在更新时一个一个指定列名称，只需在注解上设置响应的 {@code Class}，即可自动更新这些字段
      *
      * @return 任意 {@code Class} 实例
+     * @since 1.2.0
      */
     Class<?>[] updateGroups() default {};
 
-    Class<? extends TypeHandler<?>> typeHandler() default DefaultTypeHandler.class;
+    /**
+     * 字段类型处理，用于 Java 数据类型与 JDBC 数据类型的转换，向 {@code PreparedStatement} 中设置值与从
+     * {@code ResultSet} 中取值
+     *
+     * @return {@code TypeHandler}
+     * @see TypeHandler
+     * @since 1.2.0
+     */
+    Class<? extends TypeHandler> typeHandler() default DefaultTypeHandler.class;
 
 }

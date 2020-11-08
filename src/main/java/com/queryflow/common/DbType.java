@@ -3,7 +3,7 @@ package com.queryflow.common;
 public enum DbType {
 
     MYSQL("mysql"),
-    ORACLE("Oracle"),
+    ORACLE("oracle"),
     DB2("db2"),
     H2("H2"),
     HSQL("hsql"),

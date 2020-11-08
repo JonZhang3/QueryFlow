@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public abstract class Where<T> {
+public abstract class Where<T> implements Statement {
 
     private static final String AND = " AND ";
     private static final String OR = " OR ";
@@ -377,6 +377,7 @@ public abstract class Where<T> {
         return (T) this;
     }
 
+    @Override
     public List<Object> getValues() {
         return values;
     }

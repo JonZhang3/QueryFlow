@@ -10,6 +10,7 @@ public final class Delete extends Where<Delete> {
         stack.push("DELETE FROM ").push(table);
     }
 
+    @Override
     public String buildSql() {
         StringBuilder sql = stack.toStr();
         if (hasWhere) {

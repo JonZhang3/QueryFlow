@@ -14,10 +14,27 @@ public final class Select extends Where<Select> {
     private String havingCondition;
 
     public Select(String... columns) {
+        this(false, columns);
+    }
+
+    /**
+     *
+     * @param distinct 是否去重
+     * @param columns 要查询的列名
+     */
+    public Select(boolean distinct, String... columns) {
         if (columns == null || columns.length == 0) {
-            stack.push("SELECT *");
+            if(distinct) {
+                stack.push("SELECT DISTINCT *");
+            } else {
+                stack.push("SELECT *");
+            }
         } else {
-            stack.push("SELECT ");
+            if(distinct) {
+                stack.push("SELECT DISTINCT ");
+            } else {
+                stack.push("SELECT ");
+            }
             String column;
             for (int i = 0, len = columns.length; i < len; i++) {
                 column = columns[i];
@@ -111,16 +128,16 @@ public final class Select extends Where<Select> {
         return this;
     }
 
-    public Select having(String condition) {
-        if (Utils.isNotEmpty(condition)) {
-            this.havingCondition = condition;
+    public Select having(String sentence) {
+        if (Utils.isNotEmpty(sentence)) {
+            this.havingCondition = sentence;
         }
         return this;
     }
 
-    public Select having(String condition, Object value) {
-        if (Utils.isNotEmpty(condition)) {
-            this.havingCondition = condition;
+    public Select having(String sentence, Object value) {
+        if (Utils.isNotEmpty(sentence)) {
+            this.havingCondition = sentence;
             this.values.add(value);
         }
         return this;
@@ -149,6 +166,7 @@ public final class Select extends Where<Select> {
         return this;
     }
 
+    @Override
     public String buildSql() {
         StringBuilder sql = new StringBuilder(stack.toStr());
         if (hasWhere) {

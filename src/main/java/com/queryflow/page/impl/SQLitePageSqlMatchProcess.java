@@ -11,9 +11,7 @@ public class SQLitePageSqlMatchProcess extends AbstractPageSqlMatchProcess {
 
     @Override
     protected String internalSqlProcess(String sql, int start, int limit) {
-        StringBuilder pageSql = new StringBuilder();
-        pageSql.append(" LIMIT ").append(limit).append(" OFFSET ").append(start);
-        return pageSql.toString();
+        return " LIMIT " + limit + " OFFSET " + start;
     }
 
 }

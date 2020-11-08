@@ -1,9 +1,11 @@
 package com.queryflow.accessor.handler;
 
 import com.queryflow.cache.impl.LFUCache;
+import com.queryflow.common.Common;
 import com.queryflow.config.GlobalConfig;
 import com.queryflow.reflection.ReflectionUtil;
 import com.queryflow.reflection.Reflector;
+import com.queryflow.reflection.entity.EntityField;
 import com.queryflow.reflection.invoker.FieldInvoker;
 import com.queryflow.utils.JdbcUtil;
 import com.queryflow.utils.Utils;
@@ -107,7 +109,7 @@ public class BeanResultSetHandler<T> implements ResultSetHandler {
             hasNext = true;
         }
         if (hasNext) {
-            // 如果是 JDBC 通用的数据类型，则直接获取该类型的数据
+            // 如果是 JDBC 通用的数据类型，例如：int、Integer、String，则直接获取该类型的数据
             if (isCommonClass) {
                 return (T) JdbcUtil.getResultSetValue(rs, 1, beanType);
             } else {
@@ -116,6 +118,14 @@ public class BeanResultSetHandler<T> implements ResultSetHandler {
                     String columnName = JdbcUtil.getColumnName(metaData, i);
                     FieldInvoker fieldInvoker = this.invokers.get(columnName);
                     if (fieldInvoker != null) {
+                        if(fieldInvoker instanceof EntityField) {
+                            final EntityField entityField = (EntityField) fieldInvoker;
+                            if(entityField.getTypeHandler() != null) {
+                                Object value = Common.getTypeHandler(entityField.getTypeHandler()).getValue(rs, i, entityField.getType());
+                                fieldInvoker.setValue(result, value);
+                                break;
+                            }
+                        }
                         Object value = JdbcUtil.getResultSetValue(rs, i, fieldInvoker.getType());
                         fieldInvoker.setValue(result, value);
                     }
