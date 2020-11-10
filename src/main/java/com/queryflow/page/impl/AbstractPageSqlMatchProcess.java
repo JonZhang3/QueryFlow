@@ -1,9 +1,7 @@
 package com.queryflow.page.impl;
 
-import com.alibaba.druid.sql.PagerUtils;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.queryflow.page.PageSqlMatchProcess;
+import com.queryflow.utils.PagerUtil;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +18,7 @@ public abstract class AbstractPageSqlMatchProcess implements PageSqlMatchProcess
     @Override
     public String sqlProcess(String sql, int start, int limit) {
         try {
-            return PagerUtils.limit(sql, dbType().toLowerCase(), start, limit);
+            return PagerUtil.limit(sql, dbType().toLowerCase(), start, limit);
         } catch (Exception e) {
             return internalSqlProcess(sql, start, limit);
         }
@@ -38,10 +36,9 @@ public abstract class AbstractPageSqlMatchProcess implements PageSqlMatchProcess
         }
         try {
             if(originSql.indexOf('?') == -1) {
-                return PagerUtils.count(originSql, dbType().toLowerCase());
+                return PagerUtil.count(originSql, dbType().toLowerCase());
             }
-
-            return PagerUtils.count(originSql, dbType().toLowerCase());
+            return PagerUtil.count(originSql, dbType().toLowerCase(), this.countValues);
         } catch (Exception e) {
             return "SELECT COUNT(1) FROM (" + originSql + ") count_temp";
         }
