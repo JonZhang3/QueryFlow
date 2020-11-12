@@ -7,9 +7,11 @@ import com.queryflow.accessor.statement.*;
 import com.queryflow.common.DbType;
 import com.queryflow.common.ResultMap;
 import com.queryflow.common.TransactionLevel;
+import com.queryflow.common.function.Action;
 import com.queryflow.config.GlobalConfig;
 import com.queryflow.log.Log;
 import com.queryflow.log.LogFactory;
+import com.queryflow.page.CountSql;
 import com.queryflow.page.PageSqlMatchProcess;
 import com.queryflow.page.PageSqlProcessSelector;
 import com.queryflow.page.Pager;
@@ -21,6 +23,7 @@ import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class DefaultAccessor implements Accessor {
 
@@ -132,12 +135,12 @@ public class DefaultAccessor implements Accessor {
 
     @Override
     public Pager<ResultMap> pageToMap(String sql, List<Object> values, int page, int limit) {
-        return page(sql, values, page, limit, ResultMap.class);
+        return page(sql, values, page, limit, SelectStatement::listMap);
     }
 
     @Override
     public Pager<ResultMap> pageToMap(String sql, List<Object> values, int page) {
-        return page(sql, values, page, 0, ResultMap.class);
+        return pageToMap(sql, values, page, 0);
     }
 
     @Override
@@ -147,29 +150,7 @@ public class DefaultAccessor implements Accessor {
 
     @Override
     public <T> Pager<T> page(String sql, List<Object> values, int page, int limit, Class<T> requiredType) {
-        PageSqlMatchProcess process = pageSelector.select(dbType.value());
-        if (process == null) {
-            throw new QueryFlowException("not support the database");
-        }
-        int total = count(sql, values, false);
-        int defaultLimit = limit;
-        if (defaultLimit <= 0) {
-            defaultLimit = GlobalConfig.getDefaultPageLimit();
-        }
-        Pager<T> pager = new Pager<>(total, page, defaultLimit, null);
-        String pageSql = process.sqlProcess(sql, pager.getStart(), limit);
-        List records;
-        SelectStatement query = createQuery(pageSql).bindList(values);
-        if (Map.class.isAssignableFrom(requiredType)) {
-            records = query.listMap();
-        } else {
-            records = query.list(requiredType);
-        }
-        pager.setRecords(records);
-        if (GlobalConfig.isCloseAfterExecuted()) {
-            close();
-        }
-        return pager;
+        return page(sql, values, page, limit, (Function<SelectStatement, List<T>>) statement -> statement.list(requiredType));
     }
 
     @Override
@@ -184,6 +165,11 @@ public class DefaultAccessor implements Accessor {
 
     @Override
     public <T> Pager<T> page(String sql, List<Object> values, int page, int limit, ResultSetHandler<List<T>> handler) {
+        return page(sql, values, page, limit, (Function<SelectStatement, List<T>>) statement -> statement.result(handler));
+    }
+
+    private <T> Pager<T> page(String sql, List<Object> values, int page, int limit,
+                              Function<SelectStatement, List<T>> function) {
         PageSqlMatchProcess process = pageSelector.select(dbType.value());
         if (process == null) {
             throw new QueryFlowException("not support the database");
@@ -196,7 +182,7 @@ public class DefaultAccessor implements Accessor {
         Pager<T> pager = new Pager<>(total, page, defaultLimit, null);
         String pageSql = process.sqlProcess(sql, pager.getStart(), limit);
         SelectStatement statement = createQuery(pageSql).bindList(values);
-        List<T> result = statement.result(handler);
+        List<T> result = function.apply(statement);
         pager.setRecords(result);
         if (GlobalConfig.isCloseAfterExecuted()) {
             close();
@@ -215,14 +201,15 @@ public class DefaultAccessor implements Accessor {
     }
 
     private int count(String sql, List<Object> params, boolean close) {
-        Number number = createQuery(getCountSql(sql, params)).bindList(params).one(Number.class);
+        CountSql countSql = getCountSql(sql, params);
+        Number number = createQuery(countSql.getSql()).bindList(countSql.getCountValues()).one(Number.class);
         if (close) {
             close();
         }
         return number != null ? number.intValue() : 0;
     }
 
-    private String getCountSql(String sql, List<Object> values) {
+    private CountSql getCountSql(String sql, List<Object> values) {
         PageSqlMatchProcess process = pageSelector.select(dbType.value());
         return process.getCountSql(sql, values);
     }

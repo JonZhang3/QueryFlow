@@ -8,8 +8,6 @@ public interface PageSqlMatchProcess {
 
     String sqlProcess(String sql, int start, int limit);
 
-    String getCountSql(String originSql, List<Object> values);
-
-    List<Object> getCountValues();
+    CountSql getCountSql(String originSql, List<Object> values);
 
 }

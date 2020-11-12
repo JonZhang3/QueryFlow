@@ -33,10 +33,6 @@ public class DatabaseConfig {
     private String filters;// 配置拦截器
     private Properties connectProperties;
 
-    private boolean cacheDicTables;// 是否缓存字典表
-    private String dicTablePrefix = "dic_";// 指定要缓存的字典表的前缀，默认dic_
-    private Set<String> dicTables;// 指定要缓存的字典表名
-
     public DatabaseConfig() {
     }
 
@@ -198,27 +194,4 @@ public class DatabaseConfig {
         this.testWhileIdle = testWhileIdle;
     }
 
-    public boolean isCacheDicTables() {
-        return cacheDicTables;
-    }
-
-    public void setCacheDicTables(boolean cacheDicTables) {
-        this.cacheDicTables = cacheDicTables;
-    }
-
-    public String getDicTablePrefix() {
-        return dicTablePrefix;
-    }
-
-    public void setDicTablePrefix(String dicTablePrefix) {
-        this.dicTablePrefix = dicTablePrefix;
-    }
-
-    public Set<String> getDicTables() {
-        return dicTables;
-    }
-
-    public void setDicTables(Set<String> dicTables) {
-        this.dicTables = dicTables;
-    }
 }

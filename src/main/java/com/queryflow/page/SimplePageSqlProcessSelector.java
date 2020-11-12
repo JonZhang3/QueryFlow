@@ -7,10 +7,11 @@ import com.queryflow.utils.Utils;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class SimplePageSqlProcessSelector implements PageSqlProcessSelector {
 
-    private final Map<String, PageSqlMatchProcess> processes = new HashMap<>();
+    private final Map<String, PageSqlMatchProcess> processes = new ConcurrentHashMap<>();
     private final Map<String, Class<? extends PageSqlMatchProcess>> processClasses = new HashMap<>();
 
     public SimplePageSqlProcessSelector() {
@@ -24,21 +25,16 @@ public final class SimplePageSqlProcessSelector implements PageSqlProcessSelecto
 
     @Override
     public PageSqlMatchProcess select(String dbType) {
-        PageSqlMatchProcess process = processes.get(dbType);
-        if (process == null) {
-            synchronized (this) {
-                process = processes.get(dbType);
-                if (process == null) {
-                    Class<? extends PageSqlMatchProcess> processClass = processClasses.get(dbType);
-                    if (processClass == null) {
-                        throw new QueryFlowException(String.format(
-                            "根据数据库类型:%s,获取不到相应的PageSqlMatchProcess分页处理器", dbType));
-                    } else {
-                        process = Utils.instantiate(processClass);
-                    }
-                    processes.put(dbType, process);
-                }
+        PageSqlMatchProcess process = processes.computeIfAbsent(dbType, type -> {
+            Class<? extends PageSqlMatchProcess> clazz = processClasses.get(type);
+            if (clazz != null) {
+                return Utils.instantiate(clazz);
             }
+            return null;
+        });
+        if (process == null) {
+            throw new QueryFlowException(String.format(
+                "根据数据库类型:%s,获取不到相应的PageSqlMatchProcess分页处理器", dbType));
         }
         return process;
     }

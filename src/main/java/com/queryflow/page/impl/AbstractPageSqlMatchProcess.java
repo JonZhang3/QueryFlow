@@ -1,5 +1,6 @@
 package com.queryflow.page.impl;
 
+import com.queryflow.page.CountSql;
 import com.queryflow.page.PageSqlMatchProcess;
 import com.queryflow.utils.PagerUtil;
 
@@ -7,8 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class AbstractPageSqlMatchProcess implements PageSqlMatchProcess {
-
-    protected List<Object> countValues;
 
     @Override
     public boolean isMatch(String dbType) {
@@ -29,23 +28,21 @@ public abstract class AbstractPageSqlMatchProcess implements PageSqlMatchProcess
     protected abstract String internalSqlProcess(String sql, int start, int limit);
 
     @Override
-    public String getCountSql(String originSql, List<Object> values) {
-        if(values != null) {
-            this.countValues = new LinkedList<>();
-            this.countValues.addAll(values);
+    public CountSql getCountSql(String originSql, List<Object> values) {
+        List<Object> countValues = new LinkedList<>();
+        if (values != null) {
+            countValues.addAll(values);
         }
+        String sql;
         try {
-            if(originSql.indexOf('?') == -1) {
-                return PagerUtil.count(originSql, dbType().toLowerCase());
+            if (originSql.indexOf('?') == -1) {
+                sql = PagerUtil.count(originSql, dbType().toLowerCase());
             }
-            return PagerUtil.count(originSql, dbType().toLowerCase(), this.countValues);
+            sql = PagerUtil.count(originSql, dbType().toLowerCase(), countValues);
         } catch (Exception e) {
-            return "SELECT COUNT(1) FROM (" + originSql + ") count_temp";
+            sql = "SELECT COUNT(1) FROM (" + originSql + ") count_temp";
         }
+        return new CountSql(sql, countValues);
     }
 
-    @Override
-    public List<Object> getCountValues() {
-        return countValues;
-    }
 }

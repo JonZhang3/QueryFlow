@@ -185,11 +185,4 @@ public final class PagerUtil {
         }
     }
 
-    public static void main(String[] args) {
-        String sql = "SELECT username a, max(pass) FROM user GROUP BY username ORDER BY test";
-        System.out.println(PagerUtils.count(sql, "mysql"));
-        System.out.println("-------------------------");
-        System.out.println(count(sql, "mysql", new LinkedList<>()));
-    }
-
 }

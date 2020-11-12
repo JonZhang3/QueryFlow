@@ -1,5 +1,6 @@
 package com.queryflow.accessor;
 
+import com.queryflow.accessor.handler.ResultSetHandler;
 import com.queryflow.accessor.statement.*;
 import com.queryflow.common.TransactionLevel;
 import com.queryflow.page.Pager;
@@ -87,6 +88,14 @@ public final class A {
 
     public static <T> Pager<T> page(String sql, List<Object> values, int page, Class<T> requiredType) {
         return AccessorManager.accessor().page(sql, values, page, requiredType);
+    }
+
+    public static  <T> Pager<T> page(String sql, List<Object> values, int page, ResultSetHandler<List<T>> handler) {
+        return AccessorManager.accessor().page(sql, values, page, handler);
+    }
+
+    public static  <T> Pager<T> page(String sql, List<Object> values, int page, int limit, ResultSetHandler<List<T>> handler) {
+        return AccessorManager.accessor().page(sql, values, page, limit, handler);
     }
 
     public static int count(String sql, Object... values) {
