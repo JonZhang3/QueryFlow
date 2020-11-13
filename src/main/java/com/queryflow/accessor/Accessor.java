@@ -7,6 +7,7 @@ import com.queryflow.page.Pager;
 import com.queryflow.common.ResultMap;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.util.List;
 
 /**
@@ -23,6 +24,23 @@ public interface Accessor {
      * @return DataSource
      */
     DataSource getDataSource();
+
+    /**
+     * 获取当前线程使用的数据库连接 {@code Connection}
+     *
+     * @return {@code Connection}
+     * @since 1.2.0
+     */
+    Connection getCurrentConnection();
+
+    /**
+     * 为当前线程设置数据库连接，方便在多异步任务中使用同一个数据库连接（提升性能，使用事务）。
+     * 如果已经存在一个数据库连接并与设置的新连接不是同一个连接，则先关闭当前连接，然后设置新连接。
+     * 该方法最好在调用其他数据库操作之前调用
+     *
+     * @param connection 设置的新连接
+     */
+    void setCurrentConnection(Connection connection);
 
     /**
      * 创建 Update 表达式，执行增删改操作

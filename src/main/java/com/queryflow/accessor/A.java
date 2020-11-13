@@ -7,6 +7,7 @@ import com.queryflow.page.Pager;
 import com.queryflow.common.ResultMap;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.util.List;
 
 public final class A {
@@ -24,6 +25,14 @@ public final class A {
 
     public static DataSource getDataSource() {
         return AccessorManager.accessor().getDataSource();
+    }
+
+    public static Connection getCurrentConnection() {
+        return AccessorManager.accessor().getCurrentConnection();
+    }
+
+    public static void setCurrentConnection(Connection connection) {
+        AccessorManager.accessor().setCurrentConnection(connection);
     }
 
     public static UpdateStatement createUpdate(String sql) {
@@ -90,11 +99,11 @@ public final class A {
         return AccessorManager.accessor().page(sql, values, page, requiredType);
     }
 
-    public static  <T> Pager<T> page(String sql, List<Object> values, int page, ResultSetHandler<List<T>> handler) {
+    public static <T> Pager<T> page(String sql, List<Object> values, int page, ResultSetHandler<List<T>> handler) {
         return AccessorManager.accessor().page(sql, values, page, handler);
     }
 
-    public static  <T> Pager<T> page(String sql, List<Object> values, int page, int limit, ResultSetHandler<List<T>> handler) {
+    public static <T> Pager<T> page(String sql, List<Object> values, int page, int limit, ResultSetHandler<List<T>> handler) {
         return AccessorManager.accessor().page(sql, values, page, limit, handler);
     }
 

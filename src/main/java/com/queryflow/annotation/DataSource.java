@@ -17,12 +17,12 @@ public @interface DataSource {
      */
     String[] value() default {};
 
-    /**
-     * 当使用事务 {@code @Transactional} 时，并且具有多数据源，指定需要排除的数据源
-     *
-     * @return 数据源标识
-     * @since 1.2.0
-     */
-    String[] excluded() default {};
+//    /**
+//     * 当使用事务 {@code @Transactional} 时，并且具有多数据源，指定需要排除的数据源
+//     *
+//     * @return 数据源标识
+//     * @since 1.2.0
+//     */
+//    String[] excluded() default {};
 
 }

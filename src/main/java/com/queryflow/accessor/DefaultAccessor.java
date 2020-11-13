@@ -20,6 +20,7 @@ import com.queryflow.mapper.MapperManager;
 import com.queryflow.utils.*;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,16 @@ public class DefaultAccessor implements Accessor {
     @Override
     public DataSource getDataSource() {
         return executor.getDataSource();
+    }
+
+    @Override
+    public Connection getCurrentConnection() {
+        return executor.getConnection();
+    }
+
+    @Override
+    public void setCurrentConnection(Connection connection) {
+        executor.setConnection(connection);
     }
 
     @Override

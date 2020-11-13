@@ -60,6 +60,31 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
         return getTransactionManager().getConnection();
     }
 
+    /**
+     * 为当前线程设置数据库连接。
+     * 如果已经存在一个数据库连接并与设置的新连接不是同一个连接，则先关闭当前连接，然后设置新连接
+     *
+     * @param connection 新的数据库连接
+     * @since 1.2.0
+     */
+    public void setConnection(Connection connection) {
+        TransactionConnectionManager manager = CONN_CONTAINER.get();
+        if (manager == null) {
+            manager = new TransactionConnectionManager(connection);
+            CONN_CONTAINER.set(manager);
+        } else {
+            Connection oldConn = manager.connection;
+            if (oldConn != null && oldConn != connection) {
+                try {
+                    oldConn.close();
+                } catch (SQLException e) {
+                    throw new QueryFlowException(e);
+                }
+            }
+            manager.connection = connection;
+        }
+    }
+
     private TransactionConnectionManager getTransactionManager() {
         return getTransactionManager(true);
     }

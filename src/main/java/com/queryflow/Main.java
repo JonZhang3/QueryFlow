@@ -9,11 +9,13 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 public class Main {
 
+    @Transactional
     public static void main(String[] args) {
         String sql = "SELECT g.*" +
             "    , t.agentname, t.agentlogo, t.compaddress " +

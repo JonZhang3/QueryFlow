@@ -59,10 +59,10 @@ public class AccessorFactoryBuilder {
     }
 
     public AccessorFactoryBuilder addDatabase(String url, String username, String password) {
-        return addDatabse(AccessorFactory.DEFAULT_TAG, url, username, password);
+        return addDatabase(AccessorFactory.DEFAULT_TAG, url, username, password);
     }
 
-    public AccessorFactoryBuilder addDatabse(String tag, String url, String username, String password) {
+    public AccessorFactoryBuilder addDatabase(String tag, String url, String username, String password) {
         Assert.hasText(url);
         Assert.hasText(username);
         Assert.hasText(password);

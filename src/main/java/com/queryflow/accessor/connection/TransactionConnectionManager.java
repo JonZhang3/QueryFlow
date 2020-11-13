@@ -9,6 +9,7 @@ import com.queryflow.utils.JdbcUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 对数据库连接的事务管理
@@ -25,13 +26,12 @@ public class TransactionConnectionManager {
     private static final int STATUS_COMMIT = 2;
     private static final int STATUS_ROLLBACK = 3;
 
-    private int status;
-    protected final Connection connection;
+    private final AtomicInteger status = new AtomicInteger(STATUS_INIT);
+    protected Connection connection;
 
     TransactionConnectionManager(Connection connection) {
         Assert.notNull(connection);
 
-        status = STATUS_INIT;
         this.connection = connection;
     }
 
@@ -39,16 +39,20 @@ public class TransactionConnectionManager {
         return this.connection;
     }
 
+    boolean isInit() {
+        return status.get() == STATUS_INIT;
+    }
+
     boolean isOpen() {
-        return status == STATUS_OPEN;
+        return status.get() == STATUS_OPEN;
     }
 
     boolean isCommit() {
-        return status == STATUS_COMMIT;
+        return status.get() == STATUS_COMMIT;
     }
 
     boolean isRollback() {
-        return status == STATUS_ROLLBACK;
+        return status.get() == STATUS_ROLLBACK;
     }
 
     boolean isClosed() {
@@ -65,13 +69,15 @@ public class TransactionConnectionManager {
 
     // 开启事务，并指定事务级别
     void open(TransactionLevel level) {
-        if (status == STATUS_INIT || isCommit() || isRollback()) {
+        if (isInit() || isCommit() || isRollback()) {
             try {
-                connection.setAutoCommit(false);
                 if (level != null && level.getValue() != connection.getTransactionIsolation()) {
                     connection.setTransactionIsolation(level.getValue());
                 }
-                status = STATUS_OPEN;
+                if (connection.getAutoCommit()) {
+                    connection.setAutoCommit(false);
+                }
+                status.compareAndSet(STATUS_OPEN, status.get());
             } catch (SQLException e) {
                 throw new QueryFlowException(e);
             }
@@ -80,7 +86,7 @@ public class TransactionConnectionManager {
 
     void close() {
         if (isClosed()) {
-            log.debug("the connection has been closed");
+            log.warn("the connection has been closed");
             return;
         }
         if (!isOpen()) {// 处于非事务中
@@ -97,7 +103,7 @@ public class TransactionConnectionManager {
         if (isOpen()) {
             try {
                 connection.commit();
-                status = STATUS_COMMIT;
+                status.compareAndSet(STATUS_COMMIT, STATUS_OPEN);
                 log.debug("commit success");
             } catch (SQLException e) {
                 throw new QueryFlowException(e);
@@ -113,7 +119,7 @@ public class TransactionConnectionManager {
         if (isOpen()) {
             try {
                 connection.rollback();
-                status = STATUS_ROLLBACK;
+                status.compareAndSet(STATUS_ROLLBACK, STATUS_OPEN);
             } catch (SQLException e) {
                 throw new QueryFlowException(e);
             }
