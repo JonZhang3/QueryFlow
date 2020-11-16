@@ -1,5 +1,6 @@
 package com.queryflow.spring;
 
+import com.queryflow.annotation.DataSource;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -31,7 +32,15 @@ public class QFTransactionInterceptor extends TransactionInterceptor {
 
             PlatformTransactionManager ptm = this.toPlatformTransactionManager(tm);
             String joinpointIdentification = ClassUtils.getQualifiedMethodName(method, targetClass);
-            TransactionAspectSupport.TransactionInfo txInfo = this.createTransactionIfNecessary(ptm, txAttr, joinpointIdentification);
+            DataSource annotation = method.getAnnotation(DataSource.class);
+            String[] dataSourceTags;
+            if(annotation != null) {
+                dataSourceTags = annotation.value();
+            } else {
+                dataSourceTags = new String[0];
+            }
+            TransactionAspectSupport.TransactionInfo txInfo = this.createTransactionIfNecessary(ptm, txAttr,
+                joinpointIdentification, dataSourceTags);
             Object result;
             try {
                 result = invocation.proceedWithInvocation();
@@ -55,4 +64,12 @@ public class QFTransactionInterceptor extends TransactionInterceptor {
         return (PlatformTransactionManager) tm;
     }
 
+
+    protected TransactionInfo createTransactionIfNecessary(PlatformTransactionManager tm,
+                                                           TransactionAttribute txAttr,
+                                                           String joinpointIdentification, String[] dataSourceTags) {
+        QFTransactionAttribute attribute = new QFTransactionAttribute(txAttr);
+        attribute.setDataSourceTags(dataSourceTags);
+        return super.createTransactionIfNecessary(tm, attribute, joinpointIdentification);
+    }
 }

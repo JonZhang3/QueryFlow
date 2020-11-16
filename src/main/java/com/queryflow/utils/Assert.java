@@ -38,6 +38,14 @@ public final class Assert {
         }
     }
 
+    /**
+     * 判断指定对象 {@code src} 与当前对象 {@code this} 不相等
+     *
+     * @param src 指定的对象
+     * @param thisObj 当前对象，即 {@code this}
+     * @throws IllegalArgumentException 如果两个对象相等，则抛出该异常
+     * @since 1.2.0
+     */
     public static void notThis(Object src, Object thisObj) {
         if(src == thisObj) {
             throw new IllegalArgumentException("");

@@ -33,13 +33,16 @@ public abstract class AbstractPageSqlMatchProcess implements PageSqlMatchProcess
         if (values != null) {
             countValues.addAll(values);
         }
-        String sql;
+        String sql = null;
         try {
             if (originSql.indexOf('?') == -1) {
                 sql = PagerUtil.count(originSql, dbType().toLowerCase());
+            } else {
+                sql = PagerUtil.count(originSql, dbType().toLowerCase(), countValues);
             }
-            sql = PagerUtil.count(originSql, dbType().toLowerCase(), countValues);
-        } catch (Exception e) {
+        } catch (Exception ignore) {
+        }
+        if (sql == null) {
             sql = "SELECT COUNT(1) FROM (" + originSql + ") count_temp";
         }
         return new CountSql(sql, countValues);

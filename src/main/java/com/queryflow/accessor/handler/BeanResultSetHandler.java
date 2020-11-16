@@ -33,6 +33,7 @@ public class BeanResultSetHandler<T> implements ResultSetHandler {
     private final Class<T> beanType;
     private final boolean isCommonClass;
     private Map<String, FieldInvoker> invokers;
+    private int fieldSize;
 
     @SuppressWarnings("unchecked")
     public static <R> BeanResultSetHandler<R> newBeanHandler(Class<R> requiredType) {
@@ -63,6 +64,7 @@ public class BeanResultSetHandler<T> implements ResultSetHandler {
             this.invokers = new HashMap<>();
             // 通过反射获取 Bean 信息
             Reflector reflector = ReflectionUtil.forEntityClass(type);
+            this.fieldSize = reflector.fieldSize();
             boolean camelCaseToSnake = GlobalConfig.isCamelCaseToSnake();
             Iterator<FieldInvoker> iterator = reflector.fieldIterator();
             FieldInvoker fieldInvoker;
@@ -114,6 +116,14 @@ public class BeanResultSetHandler<T> implements ResultSetHandler {
                 return (T) JdbcUtil.getResultSetValue(rs, 1, beanType);
             } else {
                 T result = Utils.instantiate(beanType);
+                // 如果实体类中字段的个数小于数据库查询结果中的列数，则以实体类中字段数量为主体循环赋值
+                if(fieldSize < colCount) {
+                    for(int i = 0; i < fieldSize; i++) {
+
+                    }
+                } else {
+
+                }
                 for (int i = 1; i <= colCount; i++) {
                     String columnName = JdbcUtil.getColumnName(metaData, i);
                     FieldInvoker fieldInvoker = this.invokers.get(columnName);

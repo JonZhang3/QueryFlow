@@ -2,6 +2,13 @@ package com.queryflow.utils;
 
 import java.util.LinkedList;
 
+/**
+ * 栈的简单实现，内部使用 {@code LinkedList}，用于组装 SQL 语句
+ *
+ * @param <T>
+ * @since 1.2.0
+ * @author Jon
+ */
 public class Stack<T> {
 
     private final LinkedList<T> container = new LinkedList<>();

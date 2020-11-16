@@ -2,6 +2,7 @@ package com.queryflow.spring;
 
 import com.queryflow.accessor.A;
 import com.queryflow.common.QueryFlowException;
+import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.support.AbstractPlatformTransactionManager;
@@ -28,6 +29,8 @@ public class QueryFlowTransactionManager extends AbstractPlatformTransactionMana
 
         return object;
     }
+
+
 
     @Override
     protected void doBegin(Object transaction, TransactionDefinition definition) throws TransactionException {

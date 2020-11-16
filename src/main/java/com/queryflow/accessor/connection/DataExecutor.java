@@ -188,7 +188,7 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
                                    Interceptors interceptors,
                                    ResultSetHandler<T> handler) {
         if (GlobalConfig.isDebug()) {
-            log.debug("batchUpdate insert sql is: " + sql);
+            log.info("batchUpdate insert sql is: " + sql);
         }
         try {
             return runner.batchInsertGetKeys(getConnection(), sql, params, keyColumnNames, interceptors, handler);
@@ -209,7 +209,7 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
     @Override
     public int[] batchUpdate(String sql, List<List<Object>> params, Interceptors interceptors) {
         if (GlobalConfig.isDebug()) {
-            log.debug("the batchUpdate update sql is: " + sql);
+            log.info("the batchUpdate update sql is: " + sql);
         }
         try {
             return runner.batch(getConnection(), sql, params, interceptors);
@@ -277,8 +277,8 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
 
     private void logMessage(String sql, List<Object> params) {
         if (GlobalConfig.isDebug()) {
-            log.debug("the execute sql is: " + sql);
-            log.debug("the execute sql with values is: " + interpolation.convert(sql, params));
+            log.info("the execute sql is: " + sql);
+            log.info("the execute sql with values is: " + interpolation.convert(sql, params));
         }
     }
 
