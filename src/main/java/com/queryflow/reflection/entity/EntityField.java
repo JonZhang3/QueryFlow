@@ -8,6 +8,7 @@ import com.queryflow.common.DictionaryEnum;
 import com.queryflow.annotation.Column;
 import com.queryflow.annotation.Id;
 import com.queryflow.common.Operation;
+import com.queryflow.common.type.DefaultTypeHandler;
 import com.queryflow.common.type.TypeHandler;
 import com.queryflow.key.KeyGenerator;
 import com.queryflow.reflection.invoker.Property;
@@ -32,7 +33,7 @@ public class EntityField extends Property {
     private Class<? extends ColumnFillStrategy> fillStrategy = DefaultColumnFillStrategy.class;
     private String fillPattern = DefaultColumnFillStrategy.DEFAULT_FILL_PATTERN;
     private final Map<Class<?>, Short> updateGroupClasses = new HashMap<>();
-    private Class<? extends TypeHandler> typeHandler;
+    private Class<? extends TypeHandler> typeHandler = DefaultTypeHandler.class;
 
     public EntityField(Field field) {
         this(field, false);
@@ -93,7 +94,7 @@ public class EntityField extends Property {
 
     @Override
     public String getName() {
-        return columnName;
+        return field.getName();
     }
 
     @SuppressWarnings("unchecked")
@@ -102,7 +103,7 @@ public class EntityField extends Property {
     }
 
     public String getColumnName() {
-        return getName();
+        return this.columnName;
     }
 
     public boolean isDictionaryKey() {

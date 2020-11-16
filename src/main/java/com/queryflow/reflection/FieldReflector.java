@@ -19,7 +19,7 @@ public class FieldReflector extends Reflector {
         super(clazz, skipFinalField);
     }
 
-    public FieldReflector(Class<?> clazz, boolean containParentFields, boolean skipFinalField) {
+    public FieldReflector(Class<?> clazz, boolean skipFinalField, boolean containParentFields) {
         super(clazz, containParentFields, skipFinalField);
     }
 

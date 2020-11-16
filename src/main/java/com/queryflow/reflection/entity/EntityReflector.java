@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -35,20 +36,19 @@ public class EntityReflector extends FieldReflector {
     }
 
     public EntityReflector(Class<?> clazz, boolean skipFinalField) {
-        super(clazz, true, skipFinalField);
+        super(clazz, skipFinalField, true);
         parseTableName(clazz);
     }
 
     @Override
     protected void initFieldInvokers() {
-//        Field[] fields = type.getDeclaredFields();
         Map<String, Field> fieldMap = Utils.getFields(type);
         Collection<Field> fields = fieldMap.values();
         if(fields.size() > 0) {
             fieldInvokers = new HashMap<>(fields.size());
             columns = new HashMap<>(fields.size());
             for (Field field : fields) {
-                if (!skipFinalField && !Modifier.isFinal(field.getModifiers())) {
+                if(!(skipFinalField && Modifier.isFinal(field.getModifiers()))) {
                     EntityField invoker = (EntityField) createFieldInvoker(field);
                     fieldInvokers.put(field.getName(), invoker);
                     columns.put(invoker.getColumnName(), invoker);
@@ -62,9 +62,6 @@ public class EntityReflector extends FieldReflector {
 
     @Override
     protected FieldInvoker createFieldInvoker(Field field) {
-        if (isNormalBean) {
-            return super.createFieldInvoker(field);
-        }
         EntityField entityField = new EntityField(field, GlobalConfig.isCamelCaseToSnake());
         if (entityField.isIdField()) {
             idField = entityField;
@@ -105,7 +102,7 @@ public class EntityReflector extends FieldReflector {
         }
     }
 
-    private String formatTableName(String tableName) {
+    private static String formatTableName(String tableName) {
         int length = tableName.length();
         if (length == 1) {
             return tableName.toLowerCase(Locale.ENGLISH);

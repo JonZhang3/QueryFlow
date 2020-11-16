@@ -21,7 +21,7 @@ import java.util.Map;
 public class Reflector {
 
     protected Class<?> type;
-    protected Constructor defaultConstructor;
+    protected Constructor<?> defaultConstructor;
     protected Map<String, FieldInvoker> fieldInvokers;
     protected Map<String, MethodInvoker> methodInvokers;
     protected boolean skipFinalField;
@@ -35,7 +35,7 @@ public class Reflector {
         this(clazz, false, skipFinalField);
     }
 
-    public Reflector(Class<?> clazz, boolean containParentFields, boolean skipFinalField) {
+    public Reflector(Class<?> clazz, boolean skipFinalField, boolean containParentFields) {
         Assert.notNull(clazz);
 
         this.type = clazz;
@@ -55,14 +55,14 @@ public class Reflector {
     protected void initFieldInvokers() {
         Collection<Field> fields;
         if(this.containParentFields) {
-            fields = Arrays.asList(type.getDeclaredFields());
-        } else {
             fields = Utils.getFields(type).values();
+        } else {
+            fields = Arrays.asList(type.getDeclaredFields());
         }
         if (fields.size() > 0) {
             fieldInvokers = new HashMap<>(fields.size());
             for (Field field : fields) {
-                if (!skipFinalField && !Modifier.isFinal(field.getModifiers())) {
+                if(!(skipFinalField && Modifier.isFinal(field.getModifiers()))) {
                     fieldInvokers.put(field.getName(), createFieldInvoker(field));
                 }
             }
@@ -74,7 +74,7 @@ public class Reflector {
     // 初始化类方法
     protected void initMethodInvokers() {
         Method[] methods = type.getDeclaredMethods();
-        if (methods != null && methods.length > 0) {
+        if (methods.length > 0) {
             methodInvokers = new HashMap<>(methods.length);
             for (Method method : methods) {
                 methodInvokers.put(method.getName(), createMethodInvoker(method));

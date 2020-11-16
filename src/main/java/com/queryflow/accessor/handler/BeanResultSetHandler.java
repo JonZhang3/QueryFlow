@@ -6,6 +6,7 @@ import com.queryflow.config.GlobalConfig;
 import com.queryflow.reflection.ReflectionUtil;
 import com.queryflow.reflection.Reflector;
 import com.queryflow.reflection.entity.EntityField;
+import com.queryflow.reflection.entity.EntityReflector;
 import com.queryflow.reflection.invoker.FieldInvoker;
 import com.queryflow.utils.JdbcUtil;
 import com.queryflow.utils.Utils;
@@ -24,7 +25,7 @@ import java.util.Map;
  * @author Jon
  * @since 1.0.0
  */
-public class BeanResultSetHandler<T> implements ResultSetHandler {
+public class BeanResultSetHandler<T> implements ResultSetHandler<T> {
 
     // Java Bean 反射缓存
     private static final LFUCache<Class<?>, BeanResultSetHandler>
@@ -33,7 +34,7 @@ public class BeanResultSetHandler<T> implements ResultSetHandler {
     private final Class<T> beanType;
     private final boolean isCommonClass;
     private Map<String, FieldInvoker> invokers;
-    private int fieldSize;
+    private final int fieldSize;
 
     @SuppressWarnings("unchecked")
     public static <R> BeanResultSetHandler<R> newBeanHandler(Class<R> requiredType) {
@@ -59,34 +60,33 @@ public class BeanResultSetHandler<T> implements ResultSetHandler {
         this.beanType = type;
         if (JdbcUtil.isJdbcCommonClass(type)) {
             isCommonClass = true;
+            this.fieldSize = 0;
         } else {
             isCommonClass = false;
             this.invokers = new HashMap<>();
             // 通过反射获取 Bean 信息
-            Reflector reflector = ReflectionUtil.forEntityClass(type);
+            EntityReflector reflector = ReflectionUtil.forEntityClass(type);
             this.fieldSize = reflector.fieldSize();
             boolean camelCaseToSnake = GlobalConfig.isCamelCaseToSnake();
             Iterator<FieldInvoker> iterator = reflector.fieldIterator();
-            FieldInvoker fieldInvoker;
+            EntityField fieldInvoker;
             // 将 Bean 中的属性解析到 Map 中，方便后面使用
             // eg: userName
             while (iterator.hasNext()) {
-                fieldInvoker = iterator.next();
-                String name = fieldInvoker.getName();
+                fieldInvoker = (EntityField) iterator.next();
+                String columnName = fieldInvoker.getColumnName();
+                if (Utils.isNotEmpty(columnName)) {
+                    this.invokers.put(columnName, fieldInvoker);
+                }
+                String name = fieldInvoker.getName();// field or column name
                 this.invokers.put(name, fieldInvoker);// userName
                 String upperName = name.toUpperCase();
-                if (!name.equals(upperName)) {
-                    this.invokers.put(upperName, fieldInvoker);// USERNAME
-                }
+                this.invokers.put(upperName, fieldInvoker);// USERNAME
                 if (camelCaseToSnake) {
                     String lineName = Utils.camelCaseToSnake(name);
-                    if (!invokers.containsKey(lineName)) {
-                        this.invokers.put(lineName, fieldInvoker);// user_name
-                    }
+                    this.invokers.put(lineName, fieldInvoker);// user_name
                     String lineUpperName = lineName.toUpperCase();// USER_NAME
-                    if (!invokers.containsKey(lineUpperName)) {
-                        this.invokers.put(lineUpperName, fieldInvoker);
-                    }
+                    this.invokers.put(lineUpperName, fieldInvoker);
                 }
             }
         }
@@ -117,27 +117,24 @@ public class BeanResultSetHandler<T> implements ResultSetHandler {
             } else {
                 T result = Utils.instantiate(beanType);
                 // 如果实体类中字段的个数小于数据库查询结果中的列数，则以实体类中字段数量为主体循环赋值
-                if(fieldSize < colCount) {
-                    for(int i = 0; i < fieldSize; i++) {
+                if (fieldSize < colCount) {
 
-                    }
                 } else {
-
-                }
-                for (int i = 1; i <= colCount; i++) {
-                    String columnName = JdbcUtil.getColumnName(metaData, i);
-                    FieldInvoker fieldInvoker = this.invokers.get(columnName);
-                    if (fieldInvoker != null) {
-                        if(fieldInvoker instanceof EntityField) {
-                            final EntityField entityField = (EntityField) fieldInvoker;
-                            if(entityField.getTypeHandler() != null) {
-                                Object value = Common.getTypeHandler(entityField.getTypeHandler()).getValue(rs, i, entityField.getType());
-                                fieldInvoker.setValue(result, value);
-                                break;
+                    for (int i = 1; i <= colCount; i++) {
+                        String columnName = JdbcUtil.getColumnName(metaData, i);
+                        FieldInvoker fieldInvoker = this.invokers.get(columnName);
+                        if (fieldInvoker != null) {
+                            if (fieldInvoker instanceof EntityField) {
+                                final EntityField entityField = (EntityField) fieldInvoker;
+                                if (entityField.getTypeHandler() != null) {
+                                    Object value = Common.getTypeHandler(entityField.getTypeHandler()).getValue(rs, i, entityField.getType());
+                                    fieldInvoker.setValue(result, value);
+                                    break;
+                                }
                             }
+                            Object value = JdbcUtil.getResultSetValue(rs, i, fieldInvoker.getType());
+                            fieldInvoker.setValue(result, value);
                         }
-                        Object value = JdbcUtil.getResultSetValue(rs, i, fieldInvoker.getType());
-                        fieldInvoker.setValue(result, value);
                     }
                 }
                 return result;
