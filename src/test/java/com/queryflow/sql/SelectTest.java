@@ -20,6 +20,12 @@ public class SelectTest {
         assertEquals("SELECT SUM(num) FROM test WHERE (A = ?) OR (C <> ? AND D BETWEEN ? AND ? OR E <= ?) GROUP BY F HAVING G = 1",
                 select.buildSql());
         assertArrayEquals(new Object[]{"a", "c", 0, 10, 100}, select.getValues().toArray());
+
+        select = new Select("Websites.id, Websites.name, access_log.count, access_log.date")
+            .from("Websites")
+            .join("access_log").on("Websites.id", "access_log.site_id");
+        System.out.println(select.buildSql());
+
     }
 
 }

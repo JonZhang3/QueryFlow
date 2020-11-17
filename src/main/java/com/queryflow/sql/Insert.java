@@ -6,8 +6,10 @@ import com.queryflow.accessor.Accessor;
 import com.queryflow.utils.Assert;
 import com.queryflow.utils.Utils;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public final class Insert implements Statement {
 
@@ -69,15 +71,17 @@ public final class Insert implements Statement {
     public String buildSql() {
         StringBuilder sql = new StringBuilder("INSERT INTO ").append(table);
         if (selectStatement != null) {
+            if (columns.length() > 0) {
+                sql.append(" (")
+                    .append(columns.substring(0, columns.length() - 1))
+                    .append(")");
+            }
             sql.append(" ").append(selectStatement);
         } else {
             if (columns.length() > 0) {
                 sql.append(" (")
                     .append(columns.substring(0, columns.length() - 1))
                     .append(")");
-            }
-            if (values.isEmpty()) {
-                throw new QueryFlowException("Undefined value to insert");
             }
             sql.append(" VALUES (")
                 .append(marks.substring(0, marks.length() - 1))

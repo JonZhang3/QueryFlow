@@ -13,9 +13,8 @@ import java.util.List;
  */
 public class BeanListResultSetHandler<T> implements ResultSetHandler<List<T>> {
 
-    private BeanResultSetHandler<T> beanHandler;
+    private final BeanResultSetHandler<T> beanHandler;
 
-    @SuppressWarnings("unchecked")
     public BeanListResultSetHandler(Class<T> type) {
         beanHandler = BeanResultSetHandler.newBeanHandler(type);
     }

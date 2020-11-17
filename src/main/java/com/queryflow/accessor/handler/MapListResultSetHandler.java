@@ -5,6 +5,7 @@ import com.queryflow.common.ResultMap;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ public class MapListResultSetHandler implements ResultSetHandler<List<ResultMap>
 
     @Override
     public List<ResultMap> handle(ResultSet rs) throws SQLException {
-        List<ResultMap> result = new ArrayList<>();
+        List<ResultMap> result = new LinkedList<>();
         while (rs.next()) {
             ResultMap map = new ResultMap();
             MapResultSetHandler.fillMap(rs, rs.getMetaData(), map);

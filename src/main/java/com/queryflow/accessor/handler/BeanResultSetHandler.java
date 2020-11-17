@@ -4,7 +4,6 @@ import com.queryflow.cache.impl.LFUCache;
 import com.queryflow.common.Common;
 import com.queryflow.config.GlobalConfig;
 import com.queryflow.reflection.ReflectionUtil;
-import com.queryflow.reflection.Reflector;
 import com.queryflow.reflection.entity.EntityField;
 import com.queryflow.reflection.entity.EntityReflector;
 import com.queryflow.reflection.invoker.FieldInvoker;
@@ -83,10 +82,10 @@ public class BeanResultSetHandler<T> implements ResultSetHandler<T> {
                 String upperName = name.toUpperCase();
                 this.invokers.put(upperName, fieldInvoker);// USERNAME
                 if (camelCaseToSnake) {
-                    String lineName = Utils.camelCaseToSnake(name);
-                    this.invokers.put(lineName, fieldInvoker);// user_name
-                    String lineUpperName = lineName.toUpperCase();// USER_NAME
-                    this.invokers.put(lineUpperName, fieldInvoker);
+                    String snakeName = Utils.camelCaseToSnake(name);
+                    this.invokers.put(snakeName, fieldInvoker);// user_name
+                    String snakeUpperName = snakeName.toUpperCase();// USER_NAME
+                    this.invokers.put(snakeUpperName, fieldInvoker);
                 }
             }
         }

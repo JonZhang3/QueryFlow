@@ -25,6 +25,15 @@ public class InsertTest {
                 .values("a", "b", "c", "d");
         assertEquals("INSERT INTO test VALUES (?,?,?,?)", insert.buildSql());
         assertArrayEquals(new Object[]{"a", "b", "c", "d"}, insert.getValues().toArray());
+
+        Select select = new Select().from("user_b").where().eq("type", "1");
+        insert = new Insert("user_a").select(select);
+        assertEquals("INSERT INTO user_a SELECT * FROM user_b WHERE (type = ?)", insert.buildSql());
+        assertArrayEquals(new Object[]{"1"}, insert.getValues().toArray());
+
+        select = new Select("username", "age").from("user_b").where().eq("type", "1");
+        insert = new Insert("user_a").columns("username", "age").select(select);
+        assertEquals("INSERT INTO user_a (username,age) SELECT username, age FROM user_b WHERE (type = ?)", insert.buildSql());
     }
 
 }

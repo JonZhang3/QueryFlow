@@ -27,10 +27,10 @@ public final class Join {
     }
 
     enum JoinType {
-        JOIN(" JOIN "),
+        JOIN(" INNER JOIN "),
         LEFT_JOIN(" LEFT JOIN "),
         RIGHT_JOIN(" RIGHT JOIN "),
-        FULL_JOIN(" FULL JOIN ");
+        FULL_JOIN(" FULL OUTER JOIN ");
 
         private final String type;
 
