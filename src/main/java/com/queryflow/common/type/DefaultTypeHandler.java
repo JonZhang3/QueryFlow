@@ -17,8 +17,4 @@ public class DefaultTypeHandler implements TypeHandler<Object> {
         return JdbcUtil.getResultSetValue(rs, columnIndex, valueClass);
     }
 
-    public Object getValue(ResultSet rs, String columnName, Class<?> valueClass) throws SQLException {
-        return null;
-    }
-
 }

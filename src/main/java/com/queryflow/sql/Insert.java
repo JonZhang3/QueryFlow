@@ -1,15 +1,12 @@
 package com.queryflow.sql;
 
 import com.queryflow.accessor.AccessorFactory;
-import com.queryflow.common.QueryFlowException;
 import com.queryflow.accessor.Accessor;
 import com.queryflow.utils.Assert;
 import com.queryflow.utils.Utils;
 
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public final class Insert implements Statement {
 

@@ -21,10 +21,12 @@ public class SelectTest {
                 select.buildSql());
         assertArrayEquals(new Object[]{"a", "c", 0, 10, 100}, select.getValues().toArray());
 
-        select = new Select("Websites.id, Websites.name, access_log.count, access_log.date")
+        select = new Select("Websites.id", "Websites.name", "access_log.count", "access_log.date")
             .from("Websites")
             .join("access_log").on("Websites.id", "access_log.site_id");
-        System.out.println(select.buildSql());
+        assertEquals("SELECT Websites.id, Websites.name, access_log.count, access_log.date FROM Websites INNER " +
+            "JOIN access_log ON Websites.id = access_log.site_id", select.buildSql());
+
 
     }
 

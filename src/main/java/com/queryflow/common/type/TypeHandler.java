@@ -3,6 +3,13 @@ package com.queryflow.common.type;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * 字段类型处理接口。
+ *
+ * @param <T>
+ * @since 1.2.0
+ * @author Jon
+ */
 public interface TypeHandler<T> {
 
     /**
