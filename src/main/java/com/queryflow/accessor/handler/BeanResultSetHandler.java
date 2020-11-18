@@ -119,7 +119,7 @@ public class BeanResultSetHandler<T> implements ResultSetHandler<T> {
                     if (entityField.getTypeHandler() != null) {
                         Object value = Common.getTypeHandler(entityField.getTypeHandler()).getValue(rs, i, entityField.getType());
                         fieldInvoker.setValue(result, value);
-                        break;
+                        continue;
                     }
                 }
                 Object value = JdbcUtil.getResultSetValue(rs, i, fieldInvoker.getType());

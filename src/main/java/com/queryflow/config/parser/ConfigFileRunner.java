@@ -21,6 +21,9 @@ import java.util.Map;
 class ConfigFileRunner {
 
     List<DatabaseConfig> run(Map<String, Object> config) {
+        if (config == null) {
+            return null;
+        }
         // 全局配置
         GlobalConfig globalConfig = GlobalConfig.configer();
         globalConfig.setWorkerId(Converts.toLong(config.get("workerId"), 1L));
@@ -59,7 +62,7 @@ class ConfigFileRunner {
                 invoker.setValue(databaseConfig, Converts.to(invoker.getType(), value));
             }
         }
-        if(Utils.isEmpty(databaseConfig.getValidationQuery())) {
+        if (Utils.isEmpty(databaseConfig.getValidationQuery())) {
             databaseConfig.setTestWhileIdle(false);
         }
         return databaseConfig;

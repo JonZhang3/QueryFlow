@@ -32,6 +32,7 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
     private static final Log log = LogFactory.getLog(ConnectionManager.class);
 
     private final ThreadLocal<TransactionConnectionManager> CONN_CONTAINER = new ThreadLocal<>();
+    private final ThreadLocal<Boolean> AUTO_CLOSE_TAG = ThreadLocal.withInitial(GlobalConfig::isCloseAfterExecuted);
 
     private final DataSource dataSource;
     private final SqlRunner runner;
@@ -109,6 +110,10 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
         return transactionConnectionManager;
     }
 
+    public void setAutoClose(boolean autoClose) {
+        AUTO_CLOSE_TAG.set(autoClose);
+    }
+
     /**
      * 关闭数据库链接
      */
@@ -167,6 +172,8 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
         } catch (SQLException e) {
             log.error("update sql error: ", e);
             throw new QueryFlowException(e);
+        } finally {
+            tryClose();
         }
     }
 
@@ -179,6 +186,8 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
         } catch (SQLException e) {
             log.error("insert sql error: ", e);
             throw new QueryFlowException(e);
+        } finally {
+            tryClose();
         }
     }
 
@@ -193,7 +202,10 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
         try {
             return runner.batchInsertGetKeys(getConnection(), sql, params, keyColumnNames, interceptors, handler);
         } catch (SQLException e) {
+            log.error("batch insert error: ", e);
             throw new QueryFlowException(e);
+        } finally {
+            tryClose();
         }
     }
 
@@ -202,7 +214,10 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
         try {
             return runner.batch(getConnection(), sqls, interceptors);
         } catch (SQLException e) {
+            log.error("batch update error: ", e);
             throw new QueryFlowException(e);
+        } finally {
+            tryClose();
         }
     }
 
@@ -214,8 +229,10 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
         try {
             return runner.batch(getConnection(), sql, params, interceptors);
         } catch (SQLException e) {
-            log.error("batchUpdate update error: ", e);
+            log.error("batch update error: ", e);
             throw new QueryFlowException(e);
+        } finally {
+            tryClose();
         }
     }
 
@@ -226,8 +243,10 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
         try {
             return runner.query(getConnection(), sql, params, interceptors, handler);
         } catch (SQLException e) {
-            log.error("execute sql error: ", e);
+            log.error("query error: ", e);
             throw new QueryFlowException(e);
+        } finally {
+            tryClose();
         }
     }
 
@@ -260,6 +279,8 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
         } catch (SQLException e) {
             log.error("execute sql error: ", e);
             throw new QueryFlowException(e);
+        } finally {
+            tryClose();
         }
     }
 
@@ -272,6 +293,14 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
         } catch (SQLException e) {
             log.error("execute sql error: ", e);
             throw new QueryFlowException(e);
+        } finally {
+            tryClose();
+        }
+    }
+
+    private void tryClose() {
+        if (AUTO_CLOSE_TAG.get()) {
+            close();
         }
     }
 

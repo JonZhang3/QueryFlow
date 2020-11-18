@@ -7,7 +7,6 @@ import com.queryflow.accessor.statement.*;
 import com.queryflow.common.DbType;
 import com.queryflow.common.ResultMap;
 import com.queryflow.common.TransactionLevel;
-import com.queryflow.common.function.Action;
 import com.queryflow.config.GlobalConfig;
 import com.queryflow.log.Log;
 import com.queryflow.log.LogFactory;
@@ -23,7 +22,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 public class DefaultAccessor implements Accessor {
@@ -50,6 +48,10 @@ public class DefaultAccessor implements Accessor {
         return executor.getConnection();
     }
 
+    public void setAutoClose(boolean autoClose) {
+        executor.setAutoClose(autoClose);
+    }
+
     @Override
     public void setCurrentConnection(Connection connection) {
         executor.setConnection(connection);
@@ -62,20 +64,12 @@ public class DefaultAccessor implements Accessor {
 
     @Override
     public int update(String sql, Object... values) {
-        int rows = createUpdate(sql).bindArray(values).execute();
-        if (GlobalConfig.isCloseAfterExecuted()) {
-            close();
-        }
-        return rows;
+        return createUpdate(sql).bindArray(values).execute();
     }
 
     @Override
     public int update(String sql, List<Object> values) {
-        int rows = createUpdate(sql).bindList(values).execute();
-        if (GlobalConfig.isCloseAfterExecuted()) {
-            close();
-        }
-        return rows;
+        return createUpdate(sql).bindList(values).execute();
     }
 
     @Override
@@ -95,11 +89,7 @@ public class DefaultAccessor implements Accessor {
             for (String sql : sqls) {
                 batch.add(sql);
             }
-            int[] rows = batch.execute();
-            if (GlobalConfig.isCloseAfterExecuted()) {
-                close();
-            }
-            return rows;
+            return batch.execute();
         }
         return new int[0];
     }
@@ -116,11 +106,7 @@ public class DefaultAccessor implements Accessor {
             for (List<Object> value : values) {
                 preparedBatch.add(value);
             }
-            int[] rows = preparedBatch.execute();
-            if (GlobalConfig.isCloseAfterExecuted()) {
-                close();
-            }
-            return rows;
+            return preparedBatch.execute();
         }
         return new int[0];
     }
@@ -195,9 +181,6 @@ public class DefaultAccessor implements Accessor {
         SelectStatement statement = createQuery(pageSql).bindList(values);
         List<T> result = function.apply(statement);
         pager.setRecords(result);
-        if (GlobalConfig.isCloseAfterExecuted()) {
-            close();
-        }
         return pager;
     }
 
@@ -208,15 +191,8 @@ public class DefaultAccessor implements Accessor {
 
     @Override
     public int count(String sql, List<Object> values) {
-        return count(sql, values, GlobalConfig.isCloseAfterExecuted());
-    }
-
-    private int count(String sql, List<Object> params, boolean close) {
-        CountSql countSql = getCountSql(sql, params);
+        CountSql countSql = getCountSql(sql, values);
         Number number = createQuery(countSql.getSql()).bindList(countSql.getCountValues()).one(Number.class);
-        if (close) {
-            close();
-        }
         return number != null ? number.intValue() : 0;
     }
 

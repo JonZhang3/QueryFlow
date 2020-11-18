@@ -42,9 +42,7 @@ public class ReflectorTest {
         user.setUsername("Jon");
         user.setAge(20);
         user.setGender("1");
-        Insert insert = SqlBox.insertInstance(user);
-        System.out.println(insert.buildSql());
-        System.out.println(insert.getValues());
+
 
         EntityReflector peopleReflector = ReflectionUtil.forEntityClass(People.class);
         assertTrue(peopleReflector.isNormalBean());

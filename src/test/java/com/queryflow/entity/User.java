@@ -16,6 +16,16 @@ public class User {
     @Column("aget")
     private int age;
 
+    public User() {
+    }
+
+    public User(long id, String username, String password, int age) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.age = age;
+    }
+
     public long getId() {
         return id;
     }

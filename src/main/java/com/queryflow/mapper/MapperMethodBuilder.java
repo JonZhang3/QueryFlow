@@ -76,12 +76,7 @@ public class MapperMethodBuilder {
 
                 DataSource dataSource = method.getAnnotation(DataSource.class);
                 if (dataSource != null) {
-                    String[] sourceTags = dataSource.value();
-                    if(sourceTags.length == 0) {
-                        mapperMethod.setDataSourceTag("");
-                    } else {
-                        mapperMethod.setDataSourceTag(sourceTags[0]);
-                    }
+                    mapperMethod.setDataSourceTag(dataSource.value());
                 }
                 List<String> names = parseSql(rawSql, mapperMethod);
                 Map<String, MapperMethodParameter> parameterMap = parseParameter();

@@ -13,21 +13,25 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class AccesorTest {
 
+    private static final String URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
+    private static final String USER_NAME = "root";
+    private static final String PASSWORD = "root";
+
     @BeforeClass
-    public static void beforeClass() throws SQLException {
+    public static void beforeClass() {
         AccessorFactoryBuilder builder = new AccessorFactoryBuilder();
         DatabaseConfig config = new DatabaseConfig();
         config.setTag("mysql");
-        config.setUrl("jdbc:mysql://X.X.X.X:3306/test?useSSL=false");
-        config.setUsername("root");
-        config.setPassword("root");
+        config.setUrl(URL);
+        config.setUsername(USER_NAME);
+        config.setPassword(PASSWORD);
         builder.addDatabase(config)
             .scanPackage("com.queryflow")
             .build(true);
@@ -36,7 +40,7 @@ public class AccesorTest {
 
     @After
     public void after() {
-        AccessorFactory.accessor().close();
+//        AccessorFactory.accessor().close();
     }
 
     private static void createTables() {
@@ -90,6 +94,27 @@ public class AccesorTest {
         wangwu.setAge(26);
         row = SqlBox.insert(wangwu);
         assertEquals(1, row);
+
+        id = KeyGenerateUtil.generateId();
+        row = SqlBox.insert("user")
+            .column("id", id).column("username", "阿达")
+            .column("password", "1212143423")
+            .column("aget", 30)
+            .execute();
+        assertEquals(1, row);
+        user = SqlBox.select("username", "password").from("user").where().eq("id", id).query(User.class);
+        assertNotNull(user);
+        assertEquals("阿达", user.getUsername());
+        assertEquals("1212143423", user.getPassword());
+
+        id = KeyGenerateUtil.generateId();
+        row = SqlBox.insert("user").values(id, "test", "test1", "40").execute();
+        assertEquals(1, row);
+        user = SqlBox.selectFrom(User.class).where().eq("id", id).query(User.class);
+        assertNotNull(user);
+        assertEquals("test", user.getUsername());
+        assertEquals("test1", user.getPassword());
+        assertEquals(40, user.getAge());
     }
 
     @Test
@@ -194,7 +219,7 @@ public class AccesorTest {
         int row = SqlBox.insert(order);
         assertEquals(1, row);
 
-        Order order2 = SqlBox.select(Order.class).where().eq("id", id).query(Order.class);
+        Order order2 = SqlBox.selectFrom(Order.class).where().eq("id", id).query(Order.class);
         assertEquals(id, order2.getId());
         assertEquals(OrderStatus.OPEN, order2.getStatus());
         assertEquals(SettlementStatus.NO.getValue(), order.getSettlementStatus());
@@ -240,6 +265,19 @@ public class AccesorTest {
             .add(KeyGenerateUtil.generateId(), "lisi", "123", 3)
             .execute();
         assertEquals(3, A.count("select * from user"));
+
+        SqlBox.delete("user").execute();
+
+        List<User> users = new LinkedList<>();
+        users.add(new User(KeyGenerateUtil.generateId(), "张三", "123", 1));
+        users.add(new User(KeyGenerateUtil.generateId(), "zhangsan", "123", 2));
+        users.add(new User(KeyGenerateUtil.generateId(), "李四", "123", 3));
+        users.add(new User(KeyGenerateUtil.generateId(), "lisi", "123", 4));
+        SqlBox.batchInsert(User.class, users);
+        List<User> userList = SqlBox.selectFrom(User.class).queryList(User.class);
+        assertEquals(4, userList.size());
     }
+
+
 
 }

@@ -21,12 +21,12 @@ public final class Delete extends Where<Delete> {
 
     public int execute() {
         Accessor accessor = AccessorFactory.accessor();
-        return accessor.update(buildSql(), Utils.toArray(values));
+        return accessor.update(buildSql(), getValues());
     }
 
     public int execute(String dataSourceTag) {
         Accessor accessor = AccessorFactory.accessor(dataSourceTag);
-        return accessor.update(buildSql(), Utils.toArray(values));
+        return accessor.update(buildSql(), getValues());
     }
 
 }

@@ -69,35 +69,6 @@ public final class SqlBox {
         return 0;
     }
 
-    public static Insert insertInstance(Object entity) {
-        Assert.notNull(entity);
-
-        EntityReflector reflector = ReflectionUtil.forEntityClass(entity.getClass());
-        if (reflector.isNormalBean()) {
-            throwNotTableBeanException(entity.getClass().getName());
-        }
-        Iterator<FieldInvoker> iterator = reflector.fieldIterator();
-        EntityField field;
-        Insert insert = new Insert(reflector.getTableName());
-        while (iterator.hasNext()) {
-            field = (EntityField) iterator.next();
-            Object value;
-            if (field.isIdField()) {
-                value = field.getValue(entity);
-                if (Utils.isZeroValue(field.getType(), value)) {
-                    value = KeyGenerateUtil.generateId(field.getKeyGeneratorClass());
-                }
-                if (value != null) {
-                    insert.column(field.getColumnName(), value);
-                }
-            } else if (field.exists()) {
-                value = field.getValue(entity, Operation.INSERT);
-                insert.column(field.getColumnName(), value);
-            }
-        }
-        return insert;
-    }
-
     public static Insert insert(String table) {
         return new Insert(table);
     }
@@ -296,7 +267,7 @@ public final class SqlBox {
         return new Select(columns);
     }
 
-    public static Select select(Class<?> entityClass) {
+    public static Select selectFrom(Class<?> entityClass) {
         Assert.notNull(entityClass);
 
         EntityReflector reflector = ReflectionUtil.forEntityClass(entityClass);
@@ -322,7 +293,7 @@ public final class SqlBox {
      * @param requiredType 包含要查询的字段的类
      * @return {@code Select}
      */
-    public static Select select(String table, Class<?> requiredType) {
+    public static Select selectFrom(String table, Class<?> requiredType) {
         EntityReflector reflector = ReflectionUtil.forEntityClass(requiredType);
         Iterator<FieldInvoker> iterator = reflector.fieldIterator();
         FieldInvoker field;
