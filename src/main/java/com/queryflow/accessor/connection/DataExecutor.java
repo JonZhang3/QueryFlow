@@ -125,6 +125,7 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
                 transactionConnectionManager.close();
             } finally {
                 CONN_CONTAINER.remove();
+                AUTO_CLOSE_TAG.remove();
             }
         }
     }

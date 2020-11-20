@@ -40,7 +40,7 @@ public class AccesorTest {
 
     @After
     public void after() {
-//        AccessorFactory.accessor().close();
+        AccessorFactory.accessor().close();
     }
 
     private static void createTables() {
@@ -278,6 +278,9 @@ public class AccesorTest {
         assertEquals(4, userList.size());
     }
 
+    @Test
+    public void testTypeHandlerAndFill() {
 
+    }
 
 }
