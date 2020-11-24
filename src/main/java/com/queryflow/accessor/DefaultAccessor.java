@@ -231,12 +231,12 @@ public class DefaultAccessor implements Accessor {
     }
 
     @Override
-    public void tx(Runnable runnable, Throwable... rollbackFor) {
-        tx(runnable, null, rollbackFor);
+    public void transaction(Runnable runnable, Throwable... rollbackFor) {
+        transaction(runnable, null, rollbackFor);
     }
 
     @Override
-    public void tx(Runnable runnable, TransactionLevel level, Throwable... rollbackFor) {
+    public void transaction(Runnable runnable, TransactionLevel level, Throwable... rollbackFor) {
         if (runnable == null) {
             return;
         }
@@ -248,17 +248,6 @@ public class DefaultAccessor implements Accessor {
             rollbackFor(t, rollbackFor);
             throw new QueryFlowException(t);
         }
-    }
-
-    @Override
-    public boolean tx(Supplier<Boolean> supplier, Throwable... rollbackFor) {
-        supplier.get();
-        return false;
-    }
-
-    @Override
-    public boolean tx(Supplier<Boolean> supplier, TransactionLevel level, Throwable... rollbackFor) {
-        return false;
     }
 
     @Override

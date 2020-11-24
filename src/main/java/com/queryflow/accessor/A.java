@@ -139,8 +139,12 @@ public final class A {
         AccessorManager.accessor().openTransaction(level);
     }
 
-    public void tx(Runnable runnable, Throwable... rollbackFors) {
-        AccessorManager.accessor().tx(runnable, rollbackFors);
+    public static void transaction(Runnable runnable, Throwable... rollbackFor) {
+        AccessorManager.accessor().transaction(runnable, rollbackFor);
+    }
+
+    public static void transaction(Runnable runnable, TransactionLevel level, Throwable... rollbackFor) {
+        AccessorManager.accessor().transaction(runnable, level, rollbackFor);
     }
 
     public static void commit() {
