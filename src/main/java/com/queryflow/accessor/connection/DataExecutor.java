@@ -154,7 +154,12 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
      */
     @Override
     public void commit() {
-        getTransactionManager().commit();
+        try {
+            getTransactionManager().commit();
+            log.info("commit the transaction");
+        } finally {
+            tryClose();
+        }
     }
 
     /**
@@ -162,7 +167,12 @@ public class DataExecutor implements ConnectionManager, ConnectionExecutor {
      */
     @Override
     public void rollback() {
-        getTransactionManager().rollback();
+        try {
+            getTransactionManager().rollback();
+            log.info("rollback the transaction");
+        } finally {
+            tryClose();
+        }
     }
 
     @Override

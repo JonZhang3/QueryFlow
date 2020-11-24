@@ -31,6 +31,10 @@ public final class A {
         return AccessorManager.accessor().getCurrentConnection();
     }
 
+    public void setAutoClose(boolean autoClose) {
+        AccessorManager.accessor().setAutoClose(autoClose);
+    }
+
     public static void setCurrentConnection(Connection connection) {
         AccessorManager.accessor().setCurrentConnection(connection);
     }
@@ -133,6 +137,10 @@ public final class A {
 
     public static void openTransaction(TransactionLevel level) {
         AccessorManager.accessor().openTransaction(level);
+    }
+
+    public void tx(Runnable runnable, Throwable... rollbackFors) {
+        AccessorManager.accessor().tx(runnable, rollbackFors);
     }
 
     public static void commit() {

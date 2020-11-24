@@ -9,6 +9,8 @@ import com.queryflow.common.ResultMap;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * 数据库访问者接口
@@ -182,6 +184,20 @@ public interface Accessor {
      * @see java.sql.Connection#setTransactionIsolation(int)
      */
     void openTransaction(TransactionLevel level);
+
+    /**
+     * 事务操作。所有的数据库操作写到事务模板回调里面。回调方法完成，自动提交事务。发生异常时，自动回滚事务。
+     *
+     * @param runnable 回调方法，在这里面写任何数据库操作
+     * @param rollbackFor 可设定当发生哪些异常时，需要回滚事务，如果不设定，任何 {@code Throwable} 都会回滚事务
+     */
+    void tx(Runnable runnable, Throwable... rollbackFor);
+
+    void tx(Runnable runnable, TransactionLevel level, Throwable... rollbackFor);
+
+    boolean tx(Supplier<Boolean> supplier, Throwable... rollbackFor);
+
+    boolean tx(Supplier<Boolean> supplier, TransactionLevel level, Throwable... rollbackFor);
 
     /**
      * 提交数据库事务，事务提交后，会关闭数据库连接

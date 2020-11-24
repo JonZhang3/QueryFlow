@@ -20,9 +20,11 @@ import com.queryflow.utils.*;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class DefaultAccessor implements Accessor {
 
@@ -48,6 +50,7 @@ public class DefaultAccessor implements Accessor {
         return executor.getConnection();
     }
 
+    @Override
     public void setAutoClose(boolean autoClose) {
         executor.setAutoClose(autoClose);
     }
@@ -228,34 +231,65 @@ public class DefaultAccessor implements Accessor {
     }
 
     @Override
+    public void tx(Runnable runnable, Throwable... rollbackFor) {
+        tx(runnable, null, rollbackFor);
+    }
+
+    @Override
+    public void tx(Runnable runnable, TransactionLevel level, Throwable... rollbackFor) {
+        if (runnable == null) {
+            return;
+        }
+        try {
+            openTransaction(level);
+            runnable.run();
+            commit(false);
+        } catch (Throwable t) {
+            rollbackFor(t, rollbackFor);
+            throw new QueryFlowException(t);
+        }
+    }
+
+    @Override
+    public boolean tx(Supplier<Boolean> supplier, Throwable... rollbackFor) {
+        supplier.get();
+        return false;
+    }
+
+    @Override
+    public boolean tx(Supplier<Boolean> supplier, TransactionLevel level, Throwable... rollbackFor) {
+        return false;
+    }
+
+    @Override
     public void commit() {
-        commit(true);
+        executor.commit();
     }
 
     @Override
     public void commit(boolean close) {
-        executor.commit();
-        if (close) {
-            executor.close();
-            log.info("commit and close the connection");
-        } else {
-            log.info("commit the connection");
+        try {
+            executor.commit();
+        } finally {
+            if (close) {
+                executor.close();
+            }
         }
     }
 
     @Override
     public void rollback() {
-        rollback(true);
+        executor.rollback();
     }
 
     @Override
     public void rollback(boolean close) {
-        executor.rollback();
-        if (close) {
-            executor.close();
-            log.info("rollback and close the connection");
-        } else {
-            log.info("rollback the connection");
+        try {
+            executor.rollback();
+        } finally {
+            if (close) {
+                executor.close();
+            }
         }
     }
 
@@ -267,6 +301,19 @@ public class DefaultAccessor implements Accessor {
     @Override
     public void close() {
         executor.close();
+    }
+
+    private void rollbackFor(Throwable t, Throwable... rollbackFor) {
+        if (rollbackFor == null || rollbackFor.length == 0) {
+            rollback();
+        } else {
+            for (Throwable throwable : rollbackFor) {
+                if (throwable != null && throwable.getClass().isAssignableFrom(t.getClass())) {
+                    rollback();
+                    break;
+                }
+            }
+        }
     }
 
 }

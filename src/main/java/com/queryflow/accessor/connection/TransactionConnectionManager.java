@@ -89,9 +89,7 @@ public class TransactionConnectionManager {
             log.warn("the connection has been closed");
             return;
         }
-        if (!isOpen()) {// 处于非事务中
-            JdbcUtil.close(connection);
-        }
+        JdbcUtil.close(connection);
     }
 
     protected void commit() {
