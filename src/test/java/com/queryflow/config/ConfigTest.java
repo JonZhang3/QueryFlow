@@ -12,7 +12,7 @@ public class ConfigTest {
     @Test
     public void test() {
         List<DatabaseConfig> databaseConfigs = ConfigFileFactory.parseConfigFile(null);
-        assertEquals(3, databaseConfigs.size());
+        assertEquals(2, databaseConfigs.size());
     }
 
 }

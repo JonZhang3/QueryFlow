@@ -9,8 +9,6 @@ import com.queryflow.common.ResultMap;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * 数据库访问者接口

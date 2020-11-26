@@ -39,7 +39,10 @@ class ConfigFileRunner {
         // 数据源配置
         List<DatabaseConfig> databaseConfigs = new LinkedList<>();
         Reflector reflector = new Reflector(DatabaseConfig.class);
-        databaseConfigs.add(initDatabaseConfig(reflector, config));
+        DatabaseConfig databaseConfig = initDatabaseConfig(reflector, config);
+        if(Utils.isNotEmpty(databaseConfig.getUrl())) {
+            databaseConfigs.add(databaseConfig);
+        }
 
         Object datasourcesObj = config.get("datasources");
         if (datasourcesObj != null) {
