@@ -156,4 +156,13 @@ public class ResultMap extends LinkedHashMap<String, Object> {
         return Converts.toBlob(get(name), defaultValue);
     }
 
+    @Override
+    public Object get(Object key) {
+        String strKey = (String) key;
+        Object value = super.get(strKey);
+        if (value == null && strKey != null) {
+            value = super.get(strKey.toUpperCase());
+        }
+        return value;
+    }
 }

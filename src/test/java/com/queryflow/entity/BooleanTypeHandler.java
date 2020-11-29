@@ -9,12 +9,13 @@ public class BooleanTypeHandler implements TypeHandler<Boolean> {
 
     @Override
     public Object setToStatement(Boolean value) {
-        return null;
+        return value ? "1" : "0";
     }
 
     @Override
     public Boolean getValue(ResultSet rs, int columnIndex, Class<?> valueClass) throws SQLException {
-        return null;
+        String value = rs.getString(columnIndex);
+        return "1".equals(value) ? Boolean.TRUE : Boolean.FALSE;
     }
 
 }

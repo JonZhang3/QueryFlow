@@ -1,9 +1,11 @@
 package com.queryflow.reflection.invoker;
 
+import com.queryflow.common.QueryFlowException;
 import com.queryflow.reflection.ReflectionException;
 import com.queryflow.utils.Assert;
-import com.queryflow.utils.Utils;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -34,19 +36,24 @@ public class Property implements FieldInvoker {
 
     private void init(Field field) {
         this.field = field;
-        Method setterMethod = Utils.setterMethod(field);
-        if (setterMethod != null) {
-            setter = new NormalMethod(setterMethod);
-        }
-        Method getterMethod = Utils.getterMethod(field);
-        if (getterMethod != null) {
-            getter = new NormalMethod(getterMethod);
-        }
-        if (setterMethod == null || getterMethod == null) {
-            try {
-                this.field.setAccessible(true);
-            } catch (Exception ignore) {
+        try {
+            PropertyDescriptor descriptor = new PropertyDescriptor(field.getName(), field.getDeclaringClass());
+            Method setterMethod = descriptor.getWriteMethod();
+            if (setterMethod != null) {
+                setter = new NormalMethod(setterMethod);
             }
+            Method getterMethod = descriptor.getReadMethod();
+            if (getterMethod != null) {
+                getter = new NormalMethod(getterMethod);
+            }
+            if (setterMethod == null || getterMethod == null) {
+                try {
+                    this.field.setAccessible(true);
+                } catch (Exception ignore) {
+                }
+            }
+        } catch (IntrospectionException e) {
+            throw new QueryFlowException(e);
         }
     }
 

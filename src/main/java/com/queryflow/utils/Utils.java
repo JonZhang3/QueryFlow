@@ -128,7 +128,9 @@ public final class Utils {
      *
      * @param field 类的成员变量
      * @return 字段的 getter 方法
+     * @deprecated 从 1.2.0 开始, 不再使用该方法获取属性的 getter 方法，改用 {@link java.beans.PropertyDescriptor}
      */
+    @Deprecated
     public static Method getterMethod(Field field) {
         Assert.notNull(field);
 
@@ -159,7 +161,9 @@ public final class Utils {
      *
      * @param field 类的成员变量
      * @return 字段的 setter 方法
+     * @deprecated 从 1.2.0 开始, 不再使用该方法获取属性的 setter 方法，改用 {@link java.beans.PropertyDescriptor}
      */
+    @Deprecated
     public static Method setterMethod(Field field) {
         Assert.notNull(field);
 

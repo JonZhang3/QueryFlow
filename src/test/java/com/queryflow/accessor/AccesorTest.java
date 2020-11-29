@@ -280,7 +280,31 @@ public class AccesorTest {
 
     @Test
     public void testTypeHandlerAndFill() {
+        String entitySql = "CREATE TABLE IF NOT EXISTS entity (id varchar(20) NOT NULL, is_exists char(1) DEFAULT NULL, create_time varchar(14) DEFAULT NULL, update_time varchar(14) DEFAULT NULL, PRIMARY KEY(id))";
+        A.update(entitySql);
+        String id = KeyGenerateUtil.generateId() + "";
+        Entity entity = new Entity();
+        entity.setId(id);
+        entity.setExists(true);
+        int column = SqlBox.insert(entity);
+        assertEquals(1, column);
+        ResultMap resultMap = A.query("SELECT * FROM entity").oneMap();
+        assertEquals("1", resultMap.getString("is_exists"));
+        String createTime = resultMap.getString("create_time");
+        String updateTime = resultMap.getString("update_time");
+        System.out.println(createTime);
+        System.out.println(updateTime);
+        Entity result = SqlBox.selectFrom(Entity.class).where().eq("id", id).query(Entity.class);
+        assertTrue(result.isExists());
+        assertEquals(createTime, result.getCreateTime());
+        assertEquals(updateTime, result.getUpdateTime());
 
+        entity.setExists(false);
+        column = SqlBox.update(entity, Entity.UpdateGroupExists.class).where().eq("id", id).execute();
+        assertEquals(1, column);
+        result = SqlBox.selectFrom(Entity.class).where().eq("id", id).query(Entity.class);
+        assertFalse(result.isExists());
+        assertEquals(createTime, result.getCreateTime());
     }
 
 }

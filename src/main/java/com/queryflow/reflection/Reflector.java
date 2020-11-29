@@ -32,7 +32,7 @@ public class Reflector {
     }
 
     public Reflector(Class<?> clazz, boolean skipFinalField) {
-        this(clazz, false, skipFinalField);
+        this(clazz, skipFinalField, false);
     }
 
     public Reflector(Class<?> clazz, boolean skipFinalField, boolean containParentFields) {
