@@ -1,5 +1,3 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1555150fbd224a19a51409b1c083f9e7)](https://www.codacy.com/manual/JonZhang3/QueryFlow?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=JonZhang3/QueryFlow&amp;utm_campaign=Badge_Grade)
-
 # 简介
 
 QueryFlow 是一款持久层框架，旨在使用者可以像水流一样流畅、简单、快速地编写数据库操作代码。
